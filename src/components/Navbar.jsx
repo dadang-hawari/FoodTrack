@@ -68,9 +68,9 @@ export default function DefaultNav() {
               onClick={() => setOpenNav(!openNav)}
             >
               {openNav ? (
-                <FontAwesomeIcon icon={faXmark} className="h-4 w-4" />
+                <FontAwesomeIcon icon={faXmark} className="h-[16px]" />
               ) : (
-                <FontAwesomeIcon icon={faBars} className="h-4 w-4" />
+                <FontAwesomeIcon icon={faBars} className="h-[16px]" />
               )}
             </IconButton>
           </div>

@@ -34,7 +34,7 @@ export default function Home() {
     <>
       <DefaultNav />
       <div className="pt-24 flex flex-col justify-between h-screen px-5">
-        <div className="absolute top-0 left-0 w-full -z-30">
+        <div className="absolute top-0 left-0 w-full -z-30 hidden lg:block">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path
               className="fill-blue-400"
@@ -45,7 +45,7 @@ export default function Home() {
         </div>
         <div>
           <div class="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-9 pb-3">
-            <div class="desc flex flex-col gap-6 text-gray-900">
+            <div class="desc flex flex-col gap-6 text-gray-900 order-1 md:order-[-1]">
               <b class="text-4xl pt-4">Gain Detail Food Information Anywhere</b>
               <p>
                 Discover the world of food like never before. Know details about
