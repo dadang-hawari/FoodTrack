@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+b {
+  @apply font-medium;
+}
+
+ol {
+  @apply list-decimal ms-5;
+}
+
+div {
+  @apply leading-7;
+}
+
+a {
+  @apply text-blue-400 underline;
+}
+
+ul li a {
+  @apply text-black no-underline;
+}
+
+h2 {
+  @apply font-medium text-lg;
+}
+
+h3 {
+  @apply text-sm;
+}
+
+input {
+  @apply outline-none;
+}
+
+label {
+  @apply block;
+}
+
+.footer div h2 {
+  @apply mb-1;
+}
+
+h3 {
+  @apply my-2;
+}
+
+input {
+  @apply border border-gray-300;
+}
+
+hr {
+  @apply border-gray-400;
+}
