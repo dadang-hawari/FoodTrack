@@ -41,7 +41,11 @@ export default function Login() {
 
       if (response.status === 200) {
         localStorage.setItem("token", data.token);
-        navigate("/");
+        navigate("/", {
+          state: {
+            success: "Login successful",
+          },
+        });
       }
     } catch (error) {
       toast.error(error.response.data.message, {

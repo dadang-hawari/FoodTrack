@@ -59,7 +59,7 @@ export default function DefaultNav() {
     <ul className="mt-2 mb-4 flex text-center flex-col gap-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <li>
         <Link
-          className={`${path === "/" ? "font-medium text-blue-600" : ""}`}
+          className={`${path === "/" ? "font-medium text-blue-500" : ""}`}
           to="/"
         >
           Home
@@ -68,7 +68,7 @@ export default function DefaultNav() {
       <li>
         <Link
           className={`${
-            path === "/food-list" ? "font-medium text-blue-600" : ""
+            path === "/food-list" ? "font-medium text-blue-500" : ""
           }`}
           to="/food-list"
         >
@@ -83,21 +83,25 @@ export default function DefaultNav() {
               className="font-medium list-none relative p-2 rounded-md"
               onClick={() => setListProfile(!listProfile)}
             >
-              <FontAwesomeIcon icon={faUser} />
-              <span className="mx-2">
-                {JSON.parse(localStorage.getItem("userData"))?.data?.name}
-              </span>
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className={`transition-transform duration-200 ${
-                  listProfile ? "rotate-180 " : ""
-                }`}
-              />
+              <div className="flex items-center">
+                <span className="bg-gray-300 block w-[22px] h-[22px] rounded-full">
+                  <FontAwesomeIcon icon={faUser} className="text-white" />
+                </span>
+                <span className="mx-2">
+                  {JSON.parse(localStorage.getItem("userData"))?.data?.name}
+                </span>
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className={`transition-transform duration-200 ${
+                    listProfile ? "rotate-180 " : ""
+                  }`}
+                />
+              </div>
             </summary>
             <div className="absolute bg-white bg-opacity-90 p-5 shadow-md rounded-md w-full">
               <Link to="/profile">Profile</Link>
               <div
-                className="text-red-400"
+                className="text-red-400 my-1"
                 onClick={() => {
                   localStorage.removeItem("token");
                   localStorage.removeItem("userData");
