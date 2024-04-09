@@ -76,16 +76,16 @@ export default function DefaultNav() {
         </Link>
       </li>
 
-      <li className="cursor-pointer relative ">
+      <li className="cursor-pointer relative  ">
         {token ? (
-          <details className="cursor-pointer relative bg-white shadow-md transition-opacity duration-700">
+          <details className="cursor-pointer relative bg-white bg-opacity-80 shadow-md rounded-md transition-opacity duration-700">
             <summary
               className="font-medium list-none relative p-2 rounded-md"
               onClick={() => setListProfile(!listProfile)}
             >
               <FontAwesomeIcon icon={faUser} />
               <span className="mx-2">
-                {JSON.parse(localStorage.getItem("userData")).data.name}
+                {JSON.parse(localStorage.getItem("userData"))?.data?.name}
               </span>
               <FontAwesomeIcon
                 icon={faChevronDown}
@@ -94,7 +94,7 @@ export default function DefaultNav() {
                 }`}
               />
             </summary>
-            <div className="absolute bg-white p-5 shadow-md rounded-md w-full">
+            <div className="absolute bg-white bg-opacity-90 p-5 shadow-md rounded-md w-full">
               <Link to="/profile">Profile</Link>
               <div
                 className="text-red-400"
@@ -130,8 +130,8 @@ export default function DefaultNav() {
   );
 
   return (
-    <div className="max-h-[768px] w-full">
-      <nav className="block shadow-md backdrop-saturate-200 backdrop-blur-2xl bg-opacity-80 bg-white text-white fixed top-0 z-10 h-max w-full rounded-none py-4 sm:px-6 px-5">
+    <div className="max-h-screen w-full">
+      <nav className="block shadow-md backdrop-saturate-200 backdrop-blur-2xl bg-opacity-80 bg-white text-white fixed top-0 z-10 h-max w-full rounded-none py-3 sm:px-6 px-5">
         <div className="flex items-center justify-between text-blue-gray-900">
           <Link to="/" className="no-underline">
             <h1 className="font-bold text-blue-400">
