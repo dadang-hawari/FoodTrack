@@ -1,13 +1,52 @@
-import { faBars, faSpoon, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faChevronCircleDown,
+  faChevronDown,
+  faSpoon,
+  faUser,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IconButton, Collapse } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { googleLogout } from "@react-oauth/google";
 
 export default function DefaultNav() {
   const [openNav, setOpenNav] = useState(false);
   const path = window.location.pathname;
+  const BASE_URL_AUTH_USER = "https://shy-cloud-3319.fly.dev/api/v1/auth/me";
+  const [userData, setUserData] = useState("");
+  const [listProfile, setListProfile] = useState(false);
+  const navigate = useNavigate();
+  // const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  const token = localStorage.getItem("token");
+
+  const authMe = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL_AUTH_USER}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserData(response?.data?.data);
+      if (response.status === 200) {
+        localStorage.setItem("userData", JSON.stringify(response?.data));
+        // setIsUserLoggedIn(true);
+      }
+      console.log("data auth", response);
+    } catch (err) {
+      console.log("error fetching auth", err);
+    }
+  };
+
+  useEffect(() => {
+    // trivia();
+    authMe();
+  }, []);
 
   useEffect(() => {
     window.addEventListener(
@@ -36,13 +75,56 @@ export default function DefaultNav() {
           Food List
         </Link>
       </li>
-      <li>
-        <Link
-          to="/login"
-          className="text-white bg-blue-500 py-2 min-w-[80px] max-w-[400px] block w--full mx-auto rounded-md"
-        >
-          Login
-        </Link>
+
+      <li className="cursor-pointer relative ">
+        {token ? (
+          <details className="cursor-pointer relative bg-white shadow-md transition-opacity duration-700">
+            <summary
+              className="font-medium list-none relative p-2 rounded-md"
+              onClick={() => setListProfile(!listProfile)}
+            >
+              <FontAwesomeIcon icon={faUser} />
+              <span className="mx-2">
+                {JSON.parse(localStorage.getItem("userData")).data.name}
+              </span>
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                className={`transition-transform duration-200 ${
+                  listProfile ? "rotate-180 " : ""
+                }`}
+              />
+            </summary>
+            <div className="absolute bg-white p-5 shadow-md rounded-md w-full">
+              <Link to="/profile">Profile</Link>
+              <div
+                className="text-red-400"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("userData");
+                  navigate("/login");
+                  googleLogout();
+                }}
+              >
+                Logout
+              </div>
+            </div>
+          </details>
+        ) : (
+          <div className="flex gap-8">
+            <Link
+              to="/login"
+              className="text-white bg-blue-500 py-2 min-w-[80px] max-w-[400px] block w--full mx-auto rounded-md"
+            >
+              Login
+            </Link>
+            <Link
+              to="/sign-up"
+              className="text-white bg-blue-500 py-2 min-w-[80px] max-w-[400px] block w--full mx-auto rounded-md"
+            >
+              Daftar
+            </Link>
+          </div>
+        )}
       </li>
     </ul>
   );

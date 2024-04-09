@@ -57,3 +57,23 @@ input {
 hr {
   @apply border-gray-400;
 }
+
+.ReactModalPortal {
+  @apply px-5;
+}
+
+.ReactModal__Overlay {
+  @apply opacity-0 transition-opacity ease-in-out duration-200;
+}
+
+.ReactModal__Overlay--after-open {
+  @apply opacity-100;
+}
+
+.ReactModal__Overlay--before-close {
+  @apply opacity-0;
+}
+
+.ReactModal__Content {
+  @apply max-w-[800px] w-[90%];
+}

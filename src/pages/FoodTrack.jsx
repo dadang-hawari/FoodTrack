@@ -178,7 +178,7 @@ export default function FoodTrack() {
                         />
                         <span>{food?.healthScore}%</span>
                       </div>
-                      <p>Health Score</p>
+                      <p className="text-center">Health Score</p>
                     </li>
                     <li className="border-r border-gray-300 pe-4">
                       <div className="flex gap-x-2 justify-center">
