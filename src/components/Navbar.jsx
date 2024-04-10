@@ -49,14 +49,17 @@ export default function DefaultNav() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener(
-      "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false)
-    );
+    window.addEventListener("resize", () => {
+      window.innerWidth >= 960 && setOpenNav(false);
+    });
   }, []);
 
   const navList = (
-    <ul className="mt-2 mb-4 flex text-center flex-col gap-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul
+      className={`mt-2 mb-4 flex text-center flex-col gap-4 lg:mb-0 lg:mt-0 transition-all  ${
+        window.innerWidth <= 959 ? "h-screen" : "h-fit"
+      } lg:flex-row lg:items-center lg:gap-6`}
+    >
       <li>
         <Link
           className={`${path === "/" ? "font-medium text-blue-500" : ""}`}
@@ -78,9 +81,9 @@ export default function DefaultNav() {
 
       <li className="cursor-pointer relative  ">
         {token ? (
-          <details className="cursor-pointer relative bg-white bg-opacity-80 shadow-md rounded-md transition-opacity duration-700">
+          <details className="cursor-pointer relative bg-white bg-opacity-80 shadow-md w-fit mx-auto rounded-md transition-opacity duration-700">
             <summary
-              className="font-medium list-none relative p-2 rounded-md"
+              className="font-medium list-none relative p-2 rounded-md text-black"
               onClick={() => setListProfile(!listProfile)}
             >
               <div className="flex items-center">
@@ -93,12 +96,12 @@ export default function DefaultNav() {
                 <FontAwesomeIcon
                   icon={faChevronDown}
                   className={`transition-transform duration-200 ${
-                    listProfile ? "rotate-180 " : ""
+                    listProfile ? "rotate-180" : "rotate-0"
                   }`}
                 />
               </div>
             </summary>
-            <div className="absolute bg-white bg-opacity-90 p-5 shadow-md rounded-md w-full">
+            <div className="absolute bg-white bg-opacity-90 p-5 shadow-md rounded-md w-full top-14 left-0">
               <Link to="/profile">Profile</Link>
               <div
                 className="text-red-400 my-1"
@@ -134,7 +137,7 @@ export default function DefaultNav() {
   );
 
   return (
-    <div className="max-h-screen w-full">
+    <div className=" w-full">
       <nav className="block shadow-md backdrop-saturate-200 backdrop-blur-2xl bg-opacity-80 bg-white text-white fixed top-0 z-10 h-max w-full rounded-none py-3 sm:px-6 px-5">
         <div className="flex items-center justify-between text-blue-gray-900">
           <Link to="/" className="no-underline">
