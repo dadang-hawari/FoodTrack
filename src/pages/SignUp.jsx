@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SpoonIcon from "/src/assets/spoon.svg";
 import axios from "axios";
 import {
+  faCheck,
   faChevronLeft,
   faEye,
   faEyeSlash,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Flip, ToastContainer, toast } from "react-toastify";
 import ReactModal from "react-modal";
 import { customStyles } from "../styles/customStyles";
 const ImgLogin = "/src/assets/login.svg";
@@ -20,6 +22,8 @@ export default function SignUp() {
   const [isPasswordShowed, setIsPasswordShowed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [isPasswordLow, setIsPasswordLow] = useState(true);
+  const [isPasswordMedium, setIsPasswordMedium] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -50,12 +54,22 @@ export default function SignUp() {
 
       if (response.status === 201) {
         // navigate("/login");
+        toast.success("Account created");
       }
     } catch (error) {
       console.error("Error:", error.response.data.message);
       toast.error("error", error.response.data.message);
     }
   }
+
+  useEffect(() => {
+    checkHowStrongPassword();
+  }, [password]);
+
+  const checkHowStrongPassword = () => {
+    if (password.length > 6) setIsPasswordMedium(true);
+    else setIsPasswordMedium(false);
+  };
 
   return (
     <div className="max-w-[500px] md:max-w-[804px] lg:max-w-full h-screen mx-auto justify-center">
@@ -136,6 +150,7 @@ export default function SignUp() {
                 className="w-full h-10 mt-2 rounded-md indent-3 border-gray-400 focus:border-blue-500 border"
                 onChange={(e) => setPassword(e.target.value)}
               />
+
               <button
                 type="button"
                 className="absolute bottom-0 right-0 rounded-e-md py-[6px] px-[5px]"
@@ -148,10 +163,65 @@ export default function SignUp() {
                   height="32"
                 />
               </button>
+              <div className="w-full h-4 flex justify-between absolute -bottom-5 border rounded-md">
+                <div
+                  className={`${
+                    isPasswordLow && "bg-red-400"
+                  } w-full rounded-s-md`}
+                ></div>
+                <div
+                  className={`${isPasswordMedium && "bg-orange-400"} w-full`}
+                ></div>
+                <div className={`bg-green-400 w-full rounded-e-md`}></div>
+              </div>
             </div>
+            <p
+              className={`${
+                password.trim()
+                  ? password.trim().charAt(0) ===
+                    password.trim().charAt(0).toUpperCase()
+                    ? "text-green-500"
+                    : "text-gray-500"
+                  : "text-gray-500"
+              }`}
+            >
+              <FontAwesomeIcon
+                icon={
+                  password.trim()
+                    ? password.trim().charAt(0) ===
+                      password.trim().charAt(0).toUpperCase()
+                      ? faCheck
+                      : faXmark
+                    : faXmark
+                }
+              />{" "}
+              Use uppercase at first word
+            </p>
+            <p
+              className={`${
+                password
+                  ? password.trim().length >= 6
+                    ? "text-green-500"
+                    : "text-gray-500"
+                  : "text-gray-500"
+              }`}
+            >
+              Minimum password is 8
+            </p>
+            <p
+              className={
+                /[0-9]/.test(password) && /[a-zA-Z]/.test(password)
+                  ? "text-green-500"
+                  : "text-gray-500"
+              }
+            >
+              Combine password with number and letter
+            </p>
+
             <button
               type="button"
-              onClick={openModal}
+              // onClick={openModal}
+              onClick={() => registUser()}
               className="bg-blue-500 text-white w-full h-10 rounded-md block font-medium"
             >
               Sign
@@ -162,11 +232,19 @@ export default function SignUp() {
               style={customStyles}
               closeTimeoutMS={200}
             >
-              Ini konten react modal
+              {password}
             </ReactModal>
-            ;
           </form>
         </div>
+        <ToastContainer
+          className="mt-14"
+          position="top-right"
+          closeOnClick="true"
+          hideProgressBar="true"
+          transition={Flip}
+          pauseOnFocusLoss="false"
+          autoClose="1000"
+        />
       </div>
     </div>
   );

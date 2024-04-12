@@ -1,6 +1,10 @@
 import {
+  faBarChart,
   faBars,
-  faChevronCircleDown,
+  faBarsProgress,
+  faChartArea,
+  faChartBar,
+  faChartLine,
   faChevronDown,
   faSpoon,
   faUser,
@@ -19,10 +23,8 @@ export default function DefaultNav() {
   const path = window.location.pathname;
   const BASE_URL_AUTH_USER = "https://shy-cloud-3319.fly.dev/api/v1/auth/me";
   const [userData, setUserData] = useState("");
-  const [listProfile, setListProfile] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false); // State untuk mengontrol dropdown profile
   const navigate = useNavigate();
-  // const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-
   const token = localStorage.getItem("token");
 
   const authMe = async () => {
@@ -35,7 +37,6 @@ export default function DefaultNav() {
       setUserData(response?.data?.data);
       if (response.status === 200) {
         localStorage.setItem("userData", JSON.stringify(response?.data));
-        // setIsUserLoggedIn(true);
       }
       console.log("data auth", response);
     } catch (err) {
@@ -44,7 +45,6 @@ export default function DefaultNav() {
   };
 
   useEffect(() => {
-    // trivia();
     authMe();
   }, []);
 
@@ -54,10 +54,14 @@ export default function DefaultNav() {
     });
   }, []);
 
+  const handleProfileDropdown = () => {
+    setShowProfileDropdown(!showProfileDropdown);
+  };
+
   const navList = (
     <ul
       className={`mt-2 mb-4 flex text-center flex-col gap-4 lg:mb-0 lg:mt-0 transition-all  ${
-        window.innerWidth <= 959 ? "h-screen" : "h-fit"
+        openNav ? "h-screen" : "h-fit"
       } lg:flex-row lg:items-center lg:gap-6`}
     >
       <li>
@@ -79,43 +83,45 @@ export default function DefaultNav() {
         </Link>
       </li>
 
-      <li className="cursor-pointer relative  ">
+      <li className=" relative">
         {token ? (
-          <details className="cursor-pointer relative bg-white bg-opacity-80 shadow-md w-fit mx-auto rounded-md transition-opacity duration-700">
-            <summary
-              className="font-medium list-none relative p-2 rounded-md text-black"
-              onClick={() => setListProfile(!listProfile)}
+          <div className="relative w-fit mx-auto">
+            <div
+              className="font-medium list-none relative p-2 rounded-md text-black cursor-pointer  bg-white bg-opacity-90"
+              onClick={handleProfileDropdown}
             >
-              <div className="flex items-center">
+              <div className="flex items-center w-fit">
                 <span className="bg-gray-300 block w-[22px] h-[22px] rounded-full">
                   <FontAwesomeIcon icon={faUser} className="text-white" />
                 </span>
-                <span className="mx-2">
+                <span className="mx-3">
                   {JSON.parse(localStorage.getItem("userData"))?.data?.name}
                 </span>
                 <FontAwesomeIcon
                   icon={faChevronDown}
                   className={`transition-transform duration-200 ${
-                    listProfile ? "rotate-180" : "rotate-0"
+                    showProfileDropdown ? "rotate-180" : "rotate-0"
                   }`}
                 />
               </div>
-            </summary>
-            <div className="absolute bg-white bg-opacity-90 p-5 shadow-md rounded-md w-full top-14 left-0">
-              <Link to="/profile">Profile</Link>
-              <div
-                className="text-red-400 my-1"
-                onClick={() => {
-                  localStorage.removeItem("token");
-                  localStorage.removeItem("userData");
-                  navigate("/login");
-                  googleLogout();
-                }}
-              >
-                Logout
-              </div>
             </div>
-          </details>
+            {showProfileDropdown && (
+              <div className="absolute bg-white bg-opacity-90 p-5 shadow-md rounded-md w-full top-10 left-0">
+                <Link to="/profile">Profile</Link>
+                <div
+                  className="text-red-400 my-1 cursor-pointer"
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userData");
+                    navigate("/login");
+                    googleLogout();
+                  }}
+                >
+                  Logout
+                </div>
+              </div>
+            )}
+          </div>
         ) : (
           <div className="flex gap-8">
             <Link
@@ -137,7 +143,7 @@ export default function DefaultNav() {
   );
 
   return (
-    <div className=" w-full">
+    <div className="w-full">
       <nav className="block shadow-md backdrop-saturate-200 backdrop-blur-2xl bg-opacity-80 bg-white text-white fixed top-0 z-10 h-max w-full rounded-none py-3 sm:px-6 px-5">
         <div className="flex items-center justify-between text-blue-gray-900">
           <Link to="/" className="no-underline">
@@ -159,7 +165,7 @@ export default function DefaultNav() {
               {openNav ? (
                 <FontAwesomeIcon icon={faXmark} className="h-[16px]" />
               ) : (
-                <FontAwesomeIcon icon={faBars} className="h-[16px]" />
+                <FontAwesomeIcon icon={faBarsProgress} className="h-[16px]" />
               )}
             </IconButton>
           </div>

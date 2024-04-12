@@ -77,7 +77,3 @@ hr {
 .ReactModal__Content {
   @apply max-w-[800px] w-[90%];
 }
-
-a {
-  @apply hover:text-blue-400;
-}

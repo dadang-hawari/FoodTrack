@@ -70,7 +70,7 @@ export default function Home() {
   return (
     <>
       <DefaultNav />
-      <div className="pt-24 flex flex-col justify-between h-screen px-5">
+      <div className="pt-24 flex flex-col justify-between h-screen px-5 text-gray-900">
         <div className="absolute top-0 left-0 w-full -z-30 hidden lg:block">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path

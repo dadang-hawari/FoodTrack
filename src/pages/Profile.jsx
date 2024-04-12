@@ -3,7 +3,17 @@ import DefaultNav from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendar,
+  faEnvelope,
+  faHandsAmericanSignLanguageInterpreting,
+  faMailBulk,
+  faTerminal,
+  faUser,
+  faUserAlt,
+  faUserCheck,
+  faVoicemail,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -23,18 +33,24 @@ export default function Profile() {
       {userData ? (
         <>
           <DefaultNav />
-          <div className="flex items-center mt-20 max-w-3xl mx-auto justify-between shadow-md p-5 ">
-            <div className="">
-              <h2 className="font-bold text-3xl mb-3">
+          <div className="flex flex-col-reverse md:flex-row w-fit md:w-full gap-4 items-center mt-20 max-w-3xl mx-auto justify-between shadow-md py-5 px-7">
+            <div className="text-gray-800">
+              <p className="font-bold text-3xl mb-3">
                 {(userData?.data?.type).toUpperCase()}
-              </h2>
+              </p>
               <div className="flex flex-col gap-y-2">
-                <h2>Name : {userData?.data?.name}</h2>{" "}
-                <h2>Email : {userData?.data?.email}</h2>
-                <h2>
-                  Joined at :{" "}
-                  {(userData?.data?.createdAt).toLocaleString("id-ID")}
-                </h2>
+                <div className="flex gap-x-5 items-center">
+                  <FontAwesomeIcon icon={faUser} />
+                  <p>{userData?.data?.name}</p>
+                </div>
+                <div className="flex gap-x-5 items-center">
+                  <FontAwesomeIcon icon={faEnvelope} />
+                  <p>{userData?.data?.email}</p>
+                </div>
+                <div className="flex gap-x-5 items-center">
+                  <FontAwesomeIcon icon={faCalendar} />
+                  <p>{(userData?.data?.createdAt).toLocaleString("id-ID")}</p>
+                </div>
               </div>
             </div>
             <div className="bg-gray-100 p-5 rounded-md">
