@@ -49,7 +49,7 @@ export default function SignUp() {
     else setIsPasswordMedium(false);
   };
   const passwordStrong = () => {
-    const strongRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[.,?!'"{}();:+-*/%=><&|!*~_#$@\|^])/;
+    const strongRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[.,~/<>?;:"'`!@#$%^&*()\[\]{}_+=|\\-])/;
 
     if (strongRegex.test(password) && password.length >= 8) setIsPasswordStrong(true);
     else setIsPasswordStrong(false);
@@ -227,6 +227,18 @@ export default function SignUp() {
               </button>
             </div>
 
+            <div
+              className={`text-xs transition-[height] duration-400 rounded-md ${
+                passMeter ? "h-2" : "h-0"
+              }`}
+            >
+              <div className="w-full flex justify-between  h-full">
+                <div className="bg-red-400 w-full rounded-s-md"></div>
+                <div className={`${isPasswordMedium && "bg-orange-400"} w-full`}></div>
+                <div className={`${isPasswordStrong && "bg-green-400"} w-full rounded-e-md`}></div>
+              </div>
+              <p>true</p>
+            </div>
             <div className="text-xs ">
               <p className={getTextStyleBasedOnCase("style")}>
                 <FontAwesomeIcon icon={getTextStyleBasedOnCase("icon")} /> Use uppercase at first
@@ -239,18 +251,6 @@ export default function SignUp() {
                 <FontAwesomeIcon icon={passWithNumAndLetter("icon")} /> Combine password with number
                 and letter
               </p>
-            </div>
-            <div
-              className={`text-xs transition-[height] duration-400 rounded-md ${
-                passMeter ? "h-4" : "h-0"
-              }`}
-            >
-              <div className="w-full flex justify-between  h-full">
-                <div className="bg-red-400 w-full rounded-s-md"></div>
-                <div className={`${isPasswordMedium && "bg-orange-400"} w-full`}></div>
-                <div className={`${isPasswordStrong && "bg-green-400"} w-full rounded-e-md`}></div>
-              </div>
-              <p>true</p>
             </div>
             <button
               type="button"
