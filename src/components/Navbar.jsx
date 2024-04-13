@@ -6,9 +6,13 @@ import {
   faChartBar,
   faChartLine,
   faChevronDown,
+  faSackXmark,
   faSpoon,
   faUser,
   faXmark,
+  faXmarkCircle,
+  faXmarkSquare,
+  faXmarksLines,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -158,12 +162,12 @@ export default function DefaultNav() {
 
             <IconButton
               variant="text"
-              className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+              className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden text-gray-800"
               ripple={false}
               onClick={() => setOpenNav(!openNav)}
             >
               {openNav ? (
-                <FontAwesomeIcon icon={faXmark} className="h-[16px]" />
+                <FontAwesomeIcon icon={faXmarkSquare} className="h-[16px]" />
               ) : (
                 <FontAwesomeIcon icon={faBarsProgress} className="h-[16px]" />
               )}

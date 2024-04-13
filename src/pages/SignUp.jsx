@@ -22,15 +22,37 @@ export default function SignUp() {
   const [isPasswordShowed, setIsPasswordShowed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const [isPasswordLow, setIsPasswordLow] = useState(true);
   const [isPasswordMedium, setIsPasswordMedium] = useState(false);
+  const [isPasswordStrong, setIsPasswordStrong] = useState(false);
+  const [passMeter, setPassMeter] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
+  const showPassMeter = () => {
+    setPassMeter(true);
+  };
+
+  const hidePassMeter = () => {
+    if (password.length > 0) setPassMeter(true);
+    else setPassMeter(false);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const passwordMedium = () => {
+    if (/[0-9]/.test(password) && /[a-zA-Z]/.test(password) && password.length >= 8)
+      setIsPasswordMedium(true);
+    else setIsPasswordMedium(false);
+  };
+  const passwordStrong = () => {
+    const strongRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[.,?!'"{}();:+-*/%=><&|!*~_#$@\|^])/;
+
+    if (strongRegex.test(password) && password.length >= 8) setIsPasswordStrong(true);
+    else setIsPasswordStrong(false);
   };
 
   async function registUser() {
@@ -63,12 +85,51 @@ export default function SignUp() {
   }
 
   useEffect(() => {
-    checkHowStrongPassword();
+    passwordMedium();
+    passwordStrong();
   }, [password]);
 
   const checkHowStrongPassword = () => {
     if (password.length > 6) setIsPasswordMedium(true);
     else setIsPasswordMedium(false);
+  };
+
+  const isMinPassLengthEight = (type) => {
+    if (type === "style") {
+      return password
+        ? password.trim().length >= 8
+          ? "text-green-500"
+          : "text-gray-500"
+        : "text-gray-500";
+    } else {
+      return password ? (password.trim().length >= 8 ? faCheck : faXmark) : faXmark;
+    }
+  };
+
+  const getTextStyleBasedOnCase = (type) => {
+    if (type === "style") {
+      return /^[A-Z]|(\s[A-Z])/.test(password)
+        ? password.trim().charAt(0) === password.trim().charAt(0).toUpperCase()
+          ? "text-green-500"
+          : "text-gray-500"
+        : "text-gray-500";
+    } else {
+      return /^[A-Z]|(\s[A-Z])/.test(password)
+        ? password.trim().charAt(0) === password.trim().charAt(0).toUpperCase()
+          ? faCheck
+          : faXmark
+        : faXmark;
+    }
+  };
+
+  const passWithNumAndLetter = (type) => {
+    if (type === "style") {
+      return /[0-9]/.test(password) && /[a-zA-Z]/.test(password)
+        ? "text-green-500"
+        : "text-gray-500";
+    } else {
+      return /[0-9]/.test(password) && /[a-zA-Z]/.test(password) ? faCheck : faXmark;
+    }
   };
 
   return (
@@ -90,10 +151,7 @@ export default function SignUp() {
             <h2 className="text-2xl font-bold">Sign in to your account</h2>
             <h3 className="text-gray-600">
               Already have an account?
-              <Link
-                to="/login"
-                className="no-underline ml-1 font-medium text-blue-600"
-              >
+              <Link to="/login" className="no-underline ml-1 font-medium text-blue-600">
                 Sign in
               </Link>
             </h3>
@@ -147,8 +205,12 @@ export default function SignUp() {
                 type={isPasswordShowed ? "text" : "password"}
                 id="pasword"
                 value={password}
+                onFocus={showPassMeter}
+                onBlur={hidePassMeter}
                 className="w-full h-10 mt-2 rounded-md indent-3 border-gray-400 focus:border-blue-500 border"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
               />
 
               <button
@@ -163,61 +225,33 @@ export default function SignUp() {
                   height="32"
                 />
               </button>
-              <div className="w-full h-4 flex justify-between absolute -bottom-5 border rounded-md">
-                <div
-                  className={`${
-                    isPasswordLow && "bg-red-400"
-                  } w-full rounded-s-md`}
-                ></div>
-                <div
-                  className={`${isPasswordMedium && "bg-orange-400"} w-full`}
-                ></div>
-                <div className={`bg-green-400 w-full rounded-e-md`}></div>
-              </div>
             </div>
-            <p
-              className={`${
-                password.trim()
-                  ? password.trim().charAt(0) ===
-                    password.trim().charAt(0).toUpperCase()
-                    ? "text-green-500"
-                    : "text-gray-500"
-                  : "text-gray-500"
-              }`}
-            >
-              <FontAwesomeIcon
-                icon={
-                  password.trim()
-                    ? password.trim().charAt(0) ===
-                      password.trim().charAt(0).toUpperCase()
-                      ? faCheck
-                      : faXmark
-                    : faXmark
-                }
-              />{" "}
-              Use uppercase at first word
-            </p>
-            <p
-              className={`${
-                password
-                  ? password.trim().length >= 6
-                    ? "text-green-500"
-                    : "text-gray-500"
-                  : "text-gray-500"
-              }`}
-            >
-              Minimum password is 8
-            </p>
-            <p
-              className={
-                /[0-9]/.test(password) && /[a-zA-Z]/.test(password)
-                  ? "text-green-500"
-                  : "text-gray-500"
-              }
-            >
-              Combine password with number and letter
-            </p>
 
+            <div className="text-xs ">
+              <p className={getTextStyleBasedOnCase("style")}>
+                <FontAwesomeIcon icon={getTextStyleBasedOnCase("icon")} /> Use uppercase at first
+                word
+              </p>
+              <p className={isMinPassLengthEight("style")}>
+                <FontAwesomeIcon icon={isMinPassLengthEight("icon")} /> Minimum password is 8
+              </p>
+              <p className={passWithNumAndLetter("style")}>
+                <FontAwesomeIcon icon={passWithNumAndLetter("icon")} /> Combine password with number
+                and letter
+              </p>
+            </div>
+            <div
+              className={`text-xs transition-[height] duration-400 rounded-md ${
+                passMeter ? "h-4" : "h-0"
+              }`}
+            >
+              <div className="w-full flex justify-between  h-full">
+                <div className="bg-red-400 w-full rounded-s-md"></div>
+                <div className={`${isPasswordMedium && "bg-orange-400"} w-full`}></div>
+                <div className={`${isPasswordStrong && "bg-green-400"} w-full rounded-e-md`}></div>
+              </div>
+              <p>true</p>
+            </div>
             <button
               type="button"
               // onClick={openModal}
