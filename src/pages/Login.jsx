@@ -185,7 +185,7 @@ export default function Login() {
 
               <div className="w-full relative">
                 <FacebookLogin
-                  appId="378815571801265"
+                  appId="972657137789736"
                   className="py-1 bg-[#4267b2] text-white rounded w-full"
                   children="Facebook"
                   onSuccess={(response) => {
