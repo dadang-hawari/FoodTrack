@@ -1,16 +1,8 @@
 import {
-  faBarChart,
-  faBars,
   faBarsProgress,
-  faChartArea,
-  faChartBar,
-  faChartLine,
   faChevronDown,
-  faSackXmark,
   faSpoon,
   faUser,
-  faXmark,
-  faXmarkCircle,
   faXmarkSquare,
   faXmarksLines,
 } from "@fortawesome/free-solid-svg-icons";
@@ -30,6 +22,7 @@ export default function DefaultNav() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false); // State untuk mengontrol dropdown profile
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const dataUser = JSON.parse(localStorage.getItem("userData"));
 
   const authMe = async () => {
     try {
@@ -69,38 +62,41 @@ export default function DefaultNav() {
       } lg:flex-row lg:items-center lg:gap-6`}
     >
       <li>
-        <Link
-          className={`${path === "/" ? "font-medium text-blue-500" : ""}`}
-          to="/"
-        >
+        <Link className={`${path === "/" ? "font-medium text-blue-500" : ""}`} to="/">
           Home
         </Link>
       </li>
       <li>
         <Link
-          className={`${
-            path === "/food-list" ? "font-medium text-blue-500" : ""
-          }`}
+          className={`${path === "/food-list" ? "font-medium text-blue-500" : ""}`}
           to="/food-list"
         >
           Food List
         </Link>
       </li>
 
-      <li className=" relative">
-        {token ? (
+      <li className="relative">
+        {token || dataUser ? (
           <div className="relative w-fit mx-auto">
             <div
-              className="font-medium list-none relative p-2 rounded-md text-black cursor-pointer  bg-white bg-opacity-90"
+              className="list-none relative p-2 rounded-md text-black cursor-pointer  bg-white bg-opacity-90"
               onClick={handleProfileDropdown}
             >
               <div className="flex items-center w-fit">
-                <span className="bg-gray-300 block w-[22px] h-[22px] rounded-full">
-                  <FontAwesomeIcon icon={faUser} className="text-white" />
-                </span>
-                <span className="mx-3">
-                  {JSON.parse(localStorage.getItem("userData"))?.data?.name}
-                </span>
+                {dataUser?.data?.picture ? (
+                  <div>
+                    <img
+                      src={dataUser?.data?.picture?.data?.url}
+                      alt={dataUser?.data?.name}
+                      className="w-[22px] h-[22px] rounded-full"
+                    />
+                  </div>
+                ) : (
+                  <span className="bg-gray-300 block w-[22px] h-[22px] rounded-full">
+                    <FontAwesomeIcon icon={faUser} className="text-white" />
+                  </span>
+                )}
+                <span className="mx-3">{dataUser.data?.name}</span>
                 <FontAwesomeIcon
                   icon={faChevronDown}
                   className={`transition-transform duration-200 ${

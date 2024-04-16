@@ -20,7 +20,7 @@ export default function Footer() {
             </li>
           </ul>
         </div>
-        <div className="kontak-ft">
+        <div>
           <h2>Credits</h2>
           <ul>
             <li>
@@ -29,8 +29,12 @@ export default function Footer() {
               </a>
             </li>
             <li className="mt-2">
-              <a href="#" rel="noreffer" target="_blank">
-                Font Awesome
+              <a
+                rel="noreffer"
+                target="_blank"
+                href="https://www.vecteezy.com/free-vector/flat-background-design"
+              >
+                Flat Background Design Vectors by Vecteezy
               </a>
             </li>
           </ul>
@@ -48,10 +52,7 @@ export default function Footer() {
             Spoonacular.
           </a>
         </p>
-        <p>
-          Copyright © {new Date().getFullYear()} - FoodTrack. All Rights
-          Reserved.
-        </p>
+        <p>Copyright © {new Date().getFullYear()} - FoodTrack. All Rights Reserved.</p>
       </div>
     </div>
   );

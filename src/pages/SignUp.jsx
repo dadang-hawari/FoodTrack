@@ -135,11 +135,12 @@ export default function SignUp() {
   return (
     <div className="max-w-[500px] md:max-w-[804px] lg:max-w-full h-screen mx-auto justify-center">
       <div className="grid grid-cols-1 xl:grid-cols-2 mx-auto justify-center items-center w-full max-w-[1440px]">
-        <div className="xl:flex">
+        <div className="xl:flex relative">
+          <div className="bg-blue-200 absolute  h-full w-full blur-3xl"></div>
           <img
             src={ImgLogin}
             alt="Sign in image"
-            className="xl:flex hidden w-full max-w-[700px] bg-blue-200 h-screen px-20"
+            className="xl:flex hidden w-full max-w-[700px]  backdrop-blur-md h-screen px-20"
           />
         </div>
         <div className="p-5 flex flex-col self-center gap-y-5 max-w-[500px] w-full mx-auto h-fit">

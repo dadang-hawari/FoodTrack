@@ -9,6 +9,9 @@ export default WithMT({
         "green-icon": "#48BB78",
         "orange-icon": "#ED8936",
       },
+      backgroundImage: {
+        "login-side": "url('/src/assets/soft-bg.jpg')",
+      },
     },
   },
   plugins: [],

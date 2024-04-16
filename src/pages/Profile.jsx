@@ -36,7 +36,7 @@ export default function Profile() {
           <div className="flex flex-col-reverse md:flex-row w-fit md:w-full gap-4 items-center mt-20 max-w-3xl mx-auto justify-between shadow-md py-5 px-7">
             <div className="text-gray-800">
               <p className="font-bold text-3xl mb-3">
-                {(userData?.data?.type).toUpperCase()}
+                {userData?.data?.type?.toUpperCase() ? userData?.data?.type?.toUpperCase() : "USER"}
               </p>
               <div className="flex flex-col gap-y-2">
                 <div className="flex gap-x-5 items-center">
@@ -49,16 +49,23 @@ export default function Profile() {
                 </div>
                 <div className="flex gap-x-5 items-center">
                   <FontAwesomeIcon icon={faCalendar} />
-                  <p>{(userData?.data?.createdAt).toLocaleString("id-ID")}</p>
+                  <p>{userData?.data?.createdAt?.toLocaleString("id-ID")}</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-100 p-5 rounded-md">
-              <FontAwesomeIcon
-                icon={faUserAlt}
-                className="w-52 h-52 text-gray-300"
-              />
-            </div>
+            {userData?.data?.picture ? (
+              <div>
+                <img
+                  src={userData?.data?.picture?.data?.url}
+                  alt={userData?.data?.name}
+                  className="w-52 h-52 p-5"
+                />
+              </div>
+            ) : (
+              <div className="bg-gray-100 p-5 rounded-md">
+                <FontAwesomeIcon icon={faUserAlt} className="w-52 h-52 text-gray-300" />
+              </div>
+            )}
           </div>
         </>
       ) : (
