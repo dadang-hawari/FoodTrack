@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import GoogleIcon from "/src/assets/google.svg";
 import { toast } from "react-toastify";
 
 function LoginGoogle() {
   const navigate = useNavigate();
   const login = useGoogleLogin({
-    ux_mode: "redirect",
-    redirect_uri: "http://localhost:5173/login-google",
     onSuccess: async (codeResponse) => {
       toast.loading("wait");
       console.log("Login success:", codeResponse);
@@ -31,7 +28,7 @@ function LoginGoogle() {
         localStorage.setItem("token", response.data.data.token);
         console.log("data", response.data);
         navigate("/", {
-          state: { success: "Login berhasil" },
+          state: { success: "Login successfull" },
         });
 
         //   if (response.status === 201) {

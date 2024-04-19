@@ -3,17 +3,7 @@ import DefaultNav from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendar,
-  faEnvelope,
-  faHandsAmericanSignLanguageInterpreting,
-  faMailBulk,
-  faTerminal,
-  faUser,
-  faUserAlt,
-  faUserCheck,
-  faVoicemail,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCalendar, faEnvelope, faUser, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -21,12 +11,12 @@ export default function Profile() {
 
   useEffect(() => {
     console.log(userData);
-    if (userData === null) {
+    if (!userData) {
       navigate("/", {
         state: { info: "Please sign in first to see your profile" },
       });
     }
-  });
+  }, []);
 
   return (
     <div>
@@ -47,9 +37,19 @@ export default function Profile() {
                   <FontAwesomeIcon icon={faEnvelope} />
                   <p>{userData?.data?.email}</p>
                 </div>
+                <hr />
                 <div className="flex gap-x-5 items-center">
                   <FontAwesomeIcon icon={faCalendar} />
-                  <p>{userData?.data?.createdAt?.toLocaleString("id-ID")}</p>
+                  <p>
+                    Joined on :{" "}
+                    {userData?.data?.createdAt
+                      ? new Date(userData?.data?.createdAt).toLocaleDateString("id-ID", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })
+                      : "-"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -69,7 +69,7 @@ export default function Profile() {
           </div>
         </>
       ) : (
-        <ToastContainer />
+        ""
       )}
     </div>
   );

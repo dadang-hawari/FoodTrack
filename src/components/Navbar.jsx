@@ -4,6 +4,7 @@ import {
   faSpoon,
   faUser,
   faXmarkSquare,
+  faXmark,
   faXmarksLines,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,14 +14,14 @@ import { IconButton, Collapse } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { googleLogout } from "@react-oauth/google";
+import { toast } from "react-toastify";
 
 export default function DefaultNav() {
-  const [openNav, setOpenNav] = useState(false);
+  const navigate = useNavigate();
   const path = window.location.pathname;
   const BASE_URL_AUTH_USER = "https://shy-cloud-3319.fly.dev/api/v1/auth/me";
-  const [userData, setUserData] = useState("");
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false); // State untuk mengontrol dropdown profile
-  const navigate = useNavigate();
+  const [openNav, setOpenNav] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const token = localStorage.getItem("token");
   const dataUser = JSON.parse(localStorage.getItem("userData"));
 
@@ -31,19 +32,39 @@ export default function DefaultNav() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setUserData(response?.data?.data);
-      if (response.status === 200) {
-        localStorage.setItem("userData", JSON.stringify(response?.data));
-      }
+
+      localStorage.setItem("userData", JSON.stringify(response?.data));
       console.log("data auth", response);
     } catch (err) {
+      if (err.response.status === 401) {
+        localStorage.removeItem("userData");
+        localStorage.removeItem("token");
+      } else {
+      }
+
       console.log("error fetching auth", err);
     }
   };
 
   useEffect(() => {
-    authMe();
-  }, []);
+    if (localStorage.getItem("login") === "facebook") {
+      const userData = localStorage.getItem("userData");
+      const timeNow = Math.floor(Date.now() / 1000);
+      if (userData) {
+        const userDataObj = JSON.parse(userData);
+        console.log("time now", timeNow);
+        console.log("user data", userDataObj.data.facebookExpires);
+
+        if (timeNow > userDataObj.data.facebookExpires) {
+          localStorage.removeItem("userData");
+          localStorage.removeItem("login");
+          navigate("/", { state: { info: "Token expired, please sign in" } });
+        }
+      }
+    } else if (localStorage.getItem("token")) {
+      authMe();
+    }
+  }, []); // Pastikan dependencies array kosong jika useEffect hanya perlu dijalankan sekali saat komponen dimount
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -76,7 +97,7 @@ export default function DefaultNav() {
       </li>
 
       <li className="relative">
-        {token || dataUser ? (
+        {dataUser ? (
           <div className="relative w-fit mx-auto">
             <div
               className="list-none relative p-2 rounded-md text-black cursor-pointer  bg-white bg-opacity-90"
@@ -96,7 +117,7 @@ export default function DefaultNav() {
                     <FontAwesomeIcon icon={faUser} className="text-white" />
                   </span>
                 )}
-                <span className="mx-3">{dataUser.data?.name}</span>
+                <span className="mx-3">{dataUser?.data?.name}</span>
                 <FontAwesomeIcon
                   icon={faChevronDown}
                   className={`transition-transform duration-200 ${
@@ -111,10 +132,15 @@ export default function DefaultNav() {
                 <div
                   className="text-red-400 my-1 cursor-pointer"
                   onClick={() => {
-                    localStorage.removeItem("token");
+                    localStorage.getItem("token") ? localStorage.removeItem("token") : "";
                     localStorage.removeItem("userData");
-                    navigate("/login");
-                    googleLogout();
+                    localStorage.getItem("login") ? localStorage.removeItem("login") : "";
+                    localStorage.getItem("img") ? localStorage.removeItem("img") : "";
+                    navigate("/login", {
+                      state: {
+                        info: "Logout successfull",
+                      },
+                    });
                   }}
                 >
                   Logout
@@ -128,13 +154,7 @@ export default function DefaultNav() {
               to="/login"
               className="text-white bg-blue-500 py-2 min-w-[80px] max-w-[400px] block w--full mx-auto rounded-md"
             >
-              Login
-            </Link>
-            <Link
-              to="/sign-up"
-              className="text-white bg-blue-500 py-2 min-w-[80px] max-w-[400px] block w--full mx-auto rounded-md"
-            >
-              Daftar
+              Sign in
             </Link>
           </div>
         )}

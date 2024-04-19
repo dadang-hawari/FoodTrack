@@ -7,7 +7,6 @@ import Login from "./pages/Login";
 import LoginGoogle from "./pages/GoogleLogin";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
-import GoogleLogins from "./pages/GoogleLogin";
 
 export default function App() {
   const router = createBrowserRouter([

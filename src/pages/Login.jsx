@@ -1,16 +1,13 @@
-import React, { useState, useRef } from "react";
-import SpoonIcon from "/src/assets/spoon.svg";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import FacebookLogin from "@greatsumini/react-facebook-login";
-import GoogleIcon from "/src/assets/google.svg";
-
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { faChevronLeft, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from "react-toastify";
 import LoginGoogle from "./GoogleLogin";
-import { faFacebook, faFacebookF } from "@fortawesome/free-brands-svg-icons";
+import LoginWithFacebook from "../components/LoginWithFacebook";
+import ValidateEmail from "../utils/validateEmail";
+
 const ImgLogin = "/src/assets/login.svg";
 const breakfastImg = "/src/assets/testo.svg";
 const softBG = "/src/assets/soft-bg.jpg";
@@ -22,22 +19,56 @@ export default function Login() {
   const navigate = useNavigate();
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const location = useLocation();
+
+  useEffect(() => {
+    if (userData) {
+      navigate("/", {
+        state: { info: "You've signed in" },
+      });
+    }
+    if (location.state) {
+      if (location.state.info) {
+        toast.info(location.state.info);
+      } else if (location.state.success) {
+        toast.success(location.state.success);
+      }
+      navigate(".", { state: false });
+    }
+  }, []);
 
   const handleFocusEmail = () => {
+    toast.info("Please input your email");
     emailInputRef.current.focus();
+    toast(ValidateEmail(email.trim()));
   };
   const handleFocusPassword = () => {
+    toast.info("Please input your password");
     passwordInputRef.current.focus();
   };
 
   async function loginUser() {
-    if (emailInputRef.current.value.trim().length === 0) {
-      handleFocusEmail();
-    } else if (passwordInputRef.current.value.trim().length === 0) {
-      handleFocusPassword();
+    if (email.trim().length === 0 && password.trim().length === 0) {
+      toast.info("Please fill out all fields", {
+        toastId: "toastInfo",
+      });
+      return;
+    } else if (email.trim().length === 0) {
+      ValidateEmail(email);
+      return;
+    } else if (password.trim().length === 0) {
+      toast.info("Password is required", {
+        toastId: "toastInfo",
+      });
+      return;
     }
 
     try {
+      toast.loading("wait", {
+        toastId: "toastWait",
+      });
+
       const response = await axios.post(
         "https://shy-cloud-3319.fly.dev/api/v1/auth/login",
         {
@@ -54,9 +85,10 @@ export default function Login() {
       console.log("email", email);
 
       const data = response.data.data;
-
       if (response.status === 200) {
         localStorage.setItem("token", data.token);
+        toast.dismiss("toastWait");
+
         navigate("/", {
           state: {
             success: "Login successful",
@@ -64,12 +96,14 @@ export default function Login() {
         });
       }
     } catch (error) {
+      toast.dismiss("toastWait");
+
       toast.info(
         <div className="" style={{ fontFamily: "Poppins" }}>
           {error.response.data.message}
         </div>,
         {
-          toastId: "toast1",
+          toastId: "toast-1",
         }
       );
 
@@ -87,11 +121,6 @@ export default function Login() {
             alt="Sign in image"
             className="xl:flex hidden w-full max-w-[700px] h-screen px-20 z-30"
           />
-          {/* <img
-            src={ImgLogin}
-            alt="Sign in image"
-            className="xl:flex hidden w-full max-w-[700px] h-screen px-20 z-30"
-          /> */}
         </div>
         <div className="p-5 flex flex-col self-center gap-y-5 max-w-[400px] w-full mx-auto h-fit">
           <Link to="/" className="no-underline w-fit">
@@ -123,7 +152,7 @@ export default function Login() {
               </label>
 
               <input
-                type="email"
+                type="text"
                 id="email"
                 value={email}
                 ref={emailInputRef}
@@ -170,8 +199,9 @@ export default function Login() {
               closeOnClick="true"
               hideProgressBar="true"
               transition={Flip}
-              pauseOnFocusLoss="false"
+              pauseOnFocusLoss={true}
               autoClose="1000"
+              className="text-black"
             />
 
             <div className="relative text-center after:-z-10 after:content-[''] after:border-[1px] after:absolute after:w-full after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2">
@@ -182,28 +212,7 @@ export default function Login() {
 
             <div className="flex md:flex-row flex-col gap-4">
               <LoginGoogle />
-
-              <div className="w-full relative">
-                <FacebookLogin
-                  appId="972657137789736"
-                  className="py-1 bg-[#4267b2] text-white rounded w-full"
-                  children="Facebook"
-                  onSuccess={(response) => {
-                    console.log("Login Success!", response);
-                  }}
-                  onFail={(error) => {
-                    console.log("Login Failed!", error);
-                  }}
-                  onProfileSuccess={(response) => {
-                    console.log("Get Profile Success!", response);
-                    localStorage.setItem("userData", JSON.stringify({ data: response }));
-                  }}
-                />
-                <FontAwesomeIcon
-                  icon={faFacebookF}
-                  className="absolute top-1/2 -translate-y-1/2 left-2 h-5 w-5 text-white"
-                />
-              </div>
+              <LoginWithFacebook />
             </div>
           </form>
         </div>

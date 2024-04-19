@@ -77,3 +77,8 @@ hr {
 .ReactModal__Content {
   @apply max-w-[800px] w-[90%];
 }
+
+.Toastify__toast.Toastify__toast-theme--light {
+  font-family: "Poppins", sans-serif;
+  @apply text-gray-700;
+}

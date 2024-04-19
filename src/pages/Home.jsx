@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Flip, ToastContainer, toast } from "react-toastify";
+import { Bounce, Flip, ToastContainer, Zoom, toast } from "react-toastify";
 
 export default function Home() {
   const [dataTrivia, setDataTrivia] = useState("");
@@ -17,15 +17,12 @@ export default function Home() {
   const location = useLocation();
   const trivia = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL_FOOD}?apiKey=${import.meta.env.VITE_API_KEY}`,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL_FOOD}?apiKey=${import.meta.env.VITE_API_KEY}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
       setDataTrivia(response?.data?.text);
     } catch (err) {
       console.log("error fetching data food", err);
@@ -47,24 +44,19 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // trivia();
-    authMe();
+    trivia();
     if (location.state) {
-      if (location.state.info)
-        toast.info(
-          <div className="text-black" style={{ fontFamily: "Poppins" }}>
-            {location.state.info}
-          </div>
-        );
-      else if (location.state.success) {
-        toast.success(
-          <div className="text-black" style={{ fontFamily: "Poppins" }}>
-            {location.state.success}
-          </div>
-        );
+      if (location.state.info) {
+        toast.info(location.state.info);
+      } else if (location.state.success) {
+        toast.success(location.state.success);
       }
-      navigate(".", { replace: false });
+
+      navigate(".", { state: false });
     }
+
+    if (localStorage.getItem("login") === "facebook") return;
+    authMe();
   }, []);
 
   return (
@@ -82,12 +74,10 @@ export default function Home() {
         <div>
           <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-9 pb-3">
             <div className="desc flex flex-col gap-6 text-gray-900 order-1 md:order-[-1]">
-              <b className="text-4xl pt-4">
-                Gain Detail Food Information Anywhere
-              </b>
+              <b className="text-4xl pt-4">Gain Detail Food Information Anywhere</b>
               <p>
-                Discover the world of food like never before. Know details about
-                food anytime, anywhere.
+                Discover the world of food like never before. Know details about food anytime,
+                anywhere.
                 <Link
                   className="block w-fit bg-blue-400 text-white p-2 w no-underline rounded-md mt-5"
                   to="/food-list"
@@ -108,30 +98,26 @@ export default function Home() {
           </div>
           <div className="border border-yellow-icon rounded-xl mt-12 w-full max-w-4xl mx-auto mb-32">
             <div className="flex items-center gap-x-1 border-b border-b-gray-400 p-5">
-              <FontAwesomeIcon
-                icon={faLightbulb}
-                className="text-yellow-icon"
-              />
+              <FontAwesomeIcon icon={faLightbulb} className="text-yellow-icon" />
               <h2 className="font-medium">Food Trivia</h2>
             </div>
-            {/* <p className="p-5">{dataTrivia}</p> */}
             <p className="p-5">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-              odio soluta fuga laborum accusantium necessitatibus veniam quo,
-              optio inventore maiores, dolorem quaerat saepe porro rem nihil,
-              deserunt placeat ea numquam!
+              {dataTrivia
+                ? dataTrivia
+                : "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil atque, tenetur temporibus incidunt consectetur commodi vel cum illum tempora impedit quo nesciunt quasi iusto pariatur aut, nemo voluptatibus maiores labore."}
             </p>
           </div>
         </div>
         <Footer />
         <ToastContainer
-          className="mt-14"
+          autoClose={3000}
           position="top-right"
-          closeOnClick="true"
-          hideProgressBar="true"
-          transition={Flip}
-          pauseOnFocusLoss="false"
-          autoClose="1000"
+          className="mt-14"
+          hideProgressBar={true}
+          closeOnClick
+          pauseOnFocusLoss={false}
+          transition={Bounce}
+          pauseOnHover
         />
       </div>
     </>
