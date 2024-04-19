@@ -4,21 +4,16 @@ import { faChevronLeft, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-ic
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from "react-toastify";
-import LoginGoogle from "./GoogleLogin";
+import LoginGoogle from "../components/GoogleLogin";
 import LoginWithFacebook from "../components/LoginWithFacebook";
 import ValidateEmail from "../utils/validateEmail";
-
-const ImgLogin = "/src/assets/login.svg";
-const breakfastImg = "/src/assets/testo.svg";
-const softBG = "/src/assets/soft-bg.jpg";
+import breakfastImg from "/src/assets/breakfast.svg";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordShowed, setIsPasswordShowed] = useState(false);
   const navigate = useNavigate();
-  const emailInputRef = useRef(null);
-  const passwordInputRef = useRef(null);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const location = useLocation();
 
@@ -37,16 +32,6 @@ export default function Login() {
       navigate(".", { state: false });
     }
   }, []);
-
-  const handleFocusEmail = () => {
-    toast.info("Please input your email");
-    emailInputRef.current.focus();
-    toast(ValidateEmail(email.trim()));
-  };
-  const handleFocusPassword = () => {
-    toast.info("Please input your password");
-    passwordInputRef.current.focus();
-  };
 
   async function loginUser() {
     if (email.trim().length === 0 && password.trim().length === 0) {
@@ -88,7 +73,6 @@ export default function Login() {
       if (response.status === 200) {
         localStorage.setItem("token", data.token);
         toast.dismiss("toastWait");
-
         navigate("/", {
           state: {
             success: "Login successful",
@@ -146,16 +130,12 @@ export default function Login() {
             <div>
               <label htmlFor="email" className="font-medium text-base">
                 Email address
-                <span className="text-red-400" title="required">
-                  *
-                </span>
               </label>
 
               <input
                 type="text"
                 id="email"
                 value={email}
-                ref={emailInputRef}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full h-10 mt-2 rounded-md indent-3 border-gray-400 focus:border-blue-500 border"
               />
@@ -163,14 +143,10 @@ export default function Login() {
             <div className="relative">
               <label htmlFor="password" className="font-medium text-base">
                 Password
-                <span className="text-red-400" title="required">
-                  *
-                </span>
               </label>
               <input
                 type={isPasswordShowed ? "text" : "password"}
                 id="pasword"
-                ref={passwordInputRef}
                 value={password}
                 className="w-full h-10 mt-2 rounded-md indent-3 border-gray-400 focus:border-blue-500 border"
                 onChange={(e) => setPassword(e.target.value)}

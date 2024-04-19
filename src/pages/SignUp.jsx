@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import SpoonIcon from "/src/assets/spoon.svg";
 import axios from "axios";
 import {
   faCheck,
@@ -11,10 +10,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from "react-toastify";
-import ReactModal from "react-modal";
-import { customStyles } from "../styles/customStyles";
 import ValidateEmail from "../utils/validateEmail";
-const breakfastImg = "/src/assets/testo.svg";
+import breakfastImg from "/src/assets/breakfast.svg";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");

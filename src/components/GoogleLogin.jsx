@@ -30,10 +30,6 @@ function LoginGoogle() {
         navigate("/", {
           state: { success: "Login successfull" },
         });
-
-        //   if (response.status === 201) {
-        //     navigate("/login");
-        //   }
       } catch (error) {
         console.error("Error:", error);
         toast.error("error", error);

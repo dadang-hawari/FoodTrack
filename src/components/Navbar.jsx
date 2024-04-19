@@ -4,8 +4,6 @@ import {
   faSpoon,
   faUser,
   faXmarkSquare,
-  faXmark,
-  faXmarksLines,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -13,9 +11,7 @@ import { useEffect, useState } from "react";
 import { IconButton, Collapse } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { googleLogout } from "@react-oauth/google";
-import { toast } from "react-toastify";
-
+import { FacebookLoginClient } from "@greatsumini/react-facebook-login";
 export default function DefaultNav() {
   const navigate = useNavigate();
   const path = window.location.pathname;
@@ -136,6 +132,9 @@ export default function DefaultNav() {
                     localStorage.removeItem("userData");
                     localStorage.getItem("login") ? localStorage.removeItem("login") : "";
                     localStorage.getItem("img") ? localStorage.removeItem("img") : "";
+                    localStorage.getItem("login") === "facebook"
+                      ? FacebookLoginClient.logout()
+                      : "";
                     navigate("/login", {
                       state: {
                         info: "Logout successfull",

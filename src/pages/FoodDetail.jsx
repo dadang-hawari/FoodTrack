@@ -16,20 +16,14 @@ export default function FoodDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const BASE_URL = "https://api.spoonacular.com/recipes/";
 
-  const percentCarbs = parseInt(
-    detail?.nutrition?.caloricBreakdown?.percentCarbs
-  );
-  const percentProtein = parseInt(
-    detail?.nutrition?.caloricBreakdown?.percentProtein
-  );
+  const percentCarbs = parseInt(detail?.nutrition?.caloricBreakdown?.percentCarbs);
+  const percentProtein = parseInt(detail?.nutrition?.caloricBreakdown?.percentProtein);
   const percentFat = parseInt(detail?.nutrition?.caloricBreakdown?.percentFat);
 
   const detailMeal = async () => {
     try {
       const response = await axios.get(
-        `${BASE_URL + id}/information?includeNutrition=true&apiKey=${
-          import.meta.env.VITE_API_KEY
-        }`
+        `${BASE_URL + id}/information?includeNutrition=true&apiKey=${import.meta.env.VITE_API_KEY}`
       );
       setDetail(response.data);
       setIsLoading(false);
@@ -74,12 +68,12 @@ export default function FoodDetail() {
 
             <FoodDetailInformation
               extendedIngredients={detail?.extendedIngredients}
-              imgIngredient={`${
-                BASE_URL + detail?.id
-              }/ingredientWidget.png?apiKey=${import.meta.env.VITE_API_KEY}`}
-              imgEquipment={`${
-                BASE_URL + detail?.id
-              }/equipmentWidget.png?apiKey=${import.meta.env.VITE_API_KEY}`}
+              imgIngredient={`${BASE_URL + detail?.id}/ingredientWidget.png?apiKey=${
+                import.meta.env.VITE_API_KEY
+              }`}
+              imgEquipment={`${BASE_URL + detail?.id}/equipmentWidget.png?apiKey=${
+                import.meta.env.VITE_API_KEY
+              }`}
               percentProtein={percentProtein}
               percentCarbs={percentCarbs}
               percentFat={percentFat}
@@ -92,11 +86,7 @@ export default function FoodDetail() {
         {!isLoading &&
           !detail &&
           setTimeout(() => {
-            return (
-              <h2 className="mt-20 text-center text-2xl text-red-400">
-                Data Kosong
-              </h2>
-            );
+            return <h2 className="mt-20 text-center text-2xl text-red-400">Data Kosong</h2>;
           }, 4000)}
 
         <Footer />
