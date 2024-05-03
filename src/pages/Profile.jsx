@@ -9,7 +9,6 @@ export default function Profile() {
   const navigate = useNavigate();
   const userData = useSelector((state) => state?.auth?.userData);
   useEffect(() => {
-    console.log(userData);
     if (!userData) {
       navigate("/", {
         state: { info: "Please sign in first to see your profile" },

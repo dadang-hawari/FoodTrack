@@ -31,8 +31,6 @@ export default function DefaultNav() {
       const userData = dataUser?.userData?.data;
       const timeNow = Math.floor(Date.now() / 1000);
       if (userData) {
-        console.log("time now", timeNow);
-        console.log("expire", userData?.facebookExpire);
         if (timeNow > userData?.facebookExpire) {
           dispatch(setUserData(null));
           dispatch(setToken(null));
@@ -51,10 +49,7 @@ export default function DefaultNav() {
 
   const handleLogout = () => {
     dispatch(setToken(null));
-    if (dataUser?.loginWith === "facebook")
-      FacebookLoginClient.logout(() => {
-        console.log("logout completed!");
-      });
+    if (dataUser?.loginWith === "facebook") FacebookLoginClient.logout(() => {});
     dispatch(setLoginWith(null));
     dispatch(setUserData(null));
     navigate("/login", {

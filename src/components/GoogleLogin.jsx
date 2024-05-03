@@ -19,7 +19,6 @@ function LoginGoogle() {
     onError: (error) => {
       toast.dismiss("toastLoading");
       toast.error(error);
-      console.error("Login error:", error);
     },
   });
 

@@ -13,9 +13,7 @@ export default function LoginWithFacebook() {
   let userData = useSelector((state) => state?.auth);
 
   const handleOnSuccess = (response) => {
-    console.log("Login Success!", response);
     const expire = parseInt(response?.expiresIn) + Math.floor(Date.now() / 1000);
-    console.log("facebook :>> ", userData);
     userData = {
       facebookExpire: expire,
       response,
@@ -24,7 +22,6 @@ export default function LoginWithFacebook() {
   };
 
   const handleOnFail = (error) => {
-    console.log("Login Failed!", error);
     if (error.status === "loginCancelled") {
       toast.info("Login cancelled");
     } else {
@@ -33,7 +30,6 @@ export default function LoginWithFacebook() {
   };
 
   const handleOnProfileSuccess = (response) => {
-    console.log("Get Profile Success!", response);
     userData = {
       data: {
         ...userData,
