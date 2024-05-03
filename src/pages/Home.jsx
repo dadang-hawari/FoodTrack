@@ -65,9 +65,9 @@ export default function Home() {
               <h2 className="font-medium">Food Trivia</h2>
             </div>
             <p className="p-5">
-              {trivia
+              {/* {trivia
                 ? trivia
-                : "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil atque, tenetur temporibus incidunt consectetur commodi vel cum illum tempora impedit quo nesciunt quasi iusto pariatur aut, nemo voluptatibus maiores labore."}
+                : "Recognizing that food is more than sustenance—it is an expression of culture, heritage, and creativity."} */}
             </p>
           </div>
         </div>

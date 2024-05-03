@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import FoodBaseInformation from "../components/FoodBaseInformation";
 import FoodFacts from "../components/FoodFacts";
@@ -14,8 +14,19 @@ export default function FoodDetail() {
   const location = useLocation();
   const urlPathId = window.location.pathname.split("/")[2];
   const id = urlPathId ? urlPathId : location.state.id;
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
-  console.log("dispatch :>> ", dispatch(detailFood(id)));
+
+  const getDetailFood = async () => {
+    try {
+      await dispatch(detailFood(id));
+    } catch (error) {
+      console.error("Error fetching food detail:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const {
     title,
     image,
@@ -36,55 +47,55 @@ export default function FoodDetail() {
   const percentFat = parseInt(nutrition?.caloricBreakdown?.percentFat);
 
   useEffect(() => {
-    dispatch(detailFood(id));
+    getDetailFood();
   }, []);
 
   return (
     <>
       <DefaultNav />
       <div className="bg-gray-100 flex flex-col justify-between h-screen">
-        {/* {isLoading ? (
+        {isLoading ? (
           <h2 className="text-green-400 text-center pt-44">Waiting data....</h2>
-        ) : ( */}
-        <div className="max-w-4xl mx-auto bg-white px-5 pt-20 pb-20 ">
-          <Link
-            to={"/food-list"}
-            className="block w-fit text-xl mt-5 decoration-solid no-underline"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} /> Back
-          </Link>
-          <FoodBaseInformation
-            title={title}
-            image={image}
-            sourceName={sourceName}
-            sourceUrl={sourceUrl}
-            dishTypes={dishTypes}
-          />
+        ) : (
+          <div className="max-w-4xl mx-auto bg-white px-5 pt-20 pb-20 ">
+            <Link
+              to={"/food-list"}
+              className="block w-fit text-xl mt-5 decoration-solid no-underline"
+            >
+              <FontAwesomeIcon icon={faChevronLeft} /> Back
+            </Link>
+            <FoodBaseInformation
+              title={title}
+              image={image}
+              sourceName={sourceName}
+              sourceUrl={sourceUrl}
+              dishTypes={dishTypes}
+            />
 
-          <FoodFacts
-            healthScore={healthScore}
-            nutrition={nutrition?.nutrients}
-            readyInMinutes={readyInMinutes}
-            servings={servings}
-            summary={summary}
-          />
+            <FoodFacts
+              healthScore={healthScore}
+              nutrition={nutrition?.nutrients}
+              readyInMinutes={readyInMinutes}
+              servings={servings}
+              summary={summary}
+            />
 
-          <FoodDetailInformation
-            extendedIngredients={extendedIngredients}
-            imgIngredient={`${BASE_URL_RECIPE + id}/ingredientWidget.png?apiKey=${
-              import.meta.env.VITE_API_KEY
-            }`}
-            imgEquipment={`${BASE_URL_RECIPE + id}/equipmentWidget.png?apiKey=${
-              import.meta.env.VITE_API_KEY
-            }`}
-            percentProtein={percentProtein}
-            percentCarbs={percentCarbs}
-            percentFat={percentFat}
-            nutrients={nutrition?.nutrients}
-            instructions={instructions}
-          />
-        </div>
-        )
+            <FoodDetailInformation
+              extendedIngredients={extendedIngredients}
+              imgIngredient={`${BASE_URL_RECIPE + id}/ingredientWidget.png?apiKey=${
+                import.meta.env.VITE_API_KEY
+              }`}
+              imgEquipment={`${BASE_URL_RECIPE + id}/equipmentWidget.png?apiKey=${
+                import.meta.env.VITE_API_KEY
+              }`}
+              percentProtein={percentProtein}
+              percentCarbs={percentCarbs}
+              percentFat={percentFat}
+              nutrients={nutrition?.nutrients}
+              instructions={instructions}
+            />
+          </div>
+        )}
         <Footer />
       </div>
     </>
