@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   faCheck,
   faChevronLeft,
@@ -10,20 +9,40 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from "react-toastify";
-import ValidateEmail from "../utils/validateEmail";
 import breakfastImg from "/src/assets/breakfast.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { registUser } from "../redux/actions/authActions";
+import { checkUserSignedIn } from "../utils/checkUserSignedIn";
+import {
+  passwordMedium,
+  passwordStrong,
+  letterStartWithUppercase,
+  passWithNumAndLetter,
+} from "../utils/passRegex";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordShowed, setIsPasswordShowed] = useState(false);
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  const data = useSelector((state) => state?.auth);
+  const userData = useSelector((state) => state?.auth?.userData);
+  const token = data?.token;
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isPasswordMedium, setIsPasswordMedium] = useState(false);
   const [isPasswordStrong, setIsPasswordStrong] = useState(false);
   const [passMeter, setPassMeter] = useState(false);
+
+  useEffect(() => {
+    checkUserSignedIn(token, userData, navigate);
+  });
+
+  useEffect(() => {
+    setIsPasswordMedium(passwordMedium(password));
+    setIsPasswordStrong(passwordStrong(password));
+  }, [password]);
 
   const showPassMeter = () => {
     setPassMeter(true);
@@ -35,28 +54,6 @@ export default function SignUp() {
       setPassMeter(true);
       isPassMeterStrong();
     } else setPassMeter(false);
-  };
-
-  const passwordMedium = () => {
-    if (
-      /[0-9]/.test(password) &&
-      /[a-zA-Z]/.test(
-        password && password.trim().charAt(0) === password.trim().charAt(0).toUpperCase()
-      ) &&
-      password.length >= 8
-    )
-      setIsPasswordMedium(true);
-    else setIsPasswordMedium(false);
-  };
-  const passwordStrong = () => {
-    const strongRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[.,~/<>?;:"'`!@#$%^&*()\[\]{}_+=|\\-])/;
-    if (
-      strongRegex.test(password) && password.length >= 8 && /^[A-Z]|(\s[A-Z])/.test(password)
-        ? password.trim().charAt(0) === password.trim().charAt(0).toUpperCase()
-        : ""
-    )
-      setIsPasswordStrong(true);
-    else setIsPasswordStrong(false);
   };
 
   const isPassMeterStrong = () => {
@@ -76,76 +73,6 @@ export default function SignUp() {
       return <span className={passMeter ? "text-red-500" : "hidden"}>Password is weak</span>;
     }
   };
-
-  async function registUser() {
-    try {
-      if (name.trim().length === 0 && email.trim().length === 0 && password.trim().length === 0) {
-        toast.info("Please fill out all fields", {
-          toastId: "toastInfo",
-        });
-        return;
-      } else if (name.trim().length === 0) {
-        toast.info("Name is required", {
-          toastId: "toastInfo",
-        });
-        return;
-      } else if (email.trim().length === 0) {
-        ValidateEmail(email);
-        return;
-      } else if (password.trim().length === 0) {
-        toast.info("Password is required", {
-          toastId: "toastInfo",
-        });
-      }
-
-      if (ValidateEmail(email) === true) {
-        const response = await axios.post(
-          "https://shy-cloud-3319.fly.dev/api/v1/auth/register",
-          {
-            email: email,
-            name: name,
-            password: password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        const data = response.data;
-        console.log("data", data);
-
-        if (response.status === 201) {
-          navigate("/login", { state: { success: "Account created" } });
-        }
-      }
-    } catch (error) {
-      console.error("Error:", error.response.data.message);
-      toast.error(error.response.data.message, {
-        toastId: "toastError",
-      });
-    }
-  }
-
-  useEffect(() => {
-    if (userData) {
-      navigate("/", {
-        state: { info: "You've signed in" },
-      });
-    }
-  });
-
-  useEffect(() => {
-    passwordMedium();
-    passwordStrong();
-  }, [password]);
-
-  const checkHowStrongPassword = () => {
-    if (password.length > 6) setIsPasswordMedium(true);
-    else setIsPasswordMedium(false);
-  };
-
   const isMinPassLengthEight = (type) => {
     if (type === "style") {
       return password
@@ -156,30 +83,6 @@ export default function SignUp() {
     } else {
       return password ? (password.trim().length >= 8 ? faCheck : faXmark) : faXmark;
     }
-  };
-
-  const letterStartWithUppercase = (type) => {
-    if (type === "style") {
-      return /^[A-Z]|(\s[A-Z])/.test(password)
-        ? password.trim().charAt(0) === password.trim().charAt(0).toUpperCase()
-          ? "text-green-500"
-          : "text-gray-500"
-        : "text-gray-500";
-    } else {
-      return /^[A-Z]|(\s[A-Z])/.test(password)
-        ? password.trim().charAt(0) === password.trim().charAt(0).toUpperCase()
-          ? faCheck
-          : faXmark
-        : faXmark;
-    }
-  };
-
-  const passWithNumAndLetter = (type) => {
-    const passNumAndLetter = /[0-9]/.test(password) && /[a-zA-Z]/.test(password);
-    if (type === "style") {
-      return passNumAndLetter ? "text-green-500" : "text-gray-500";
-    }
-    return passNumAndLetter ? faCheck : faXmark;
   };
 
   return (
@@ -209,7 +112,7 @@ export default function SignUp() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              registUser();
+              dispatch(registUser({ name, email, password }, navigate));
             }}
             className="flex flex-col w-full gap-y-5"
           >
@@ -238,7 +141,6 @@ export default function SignUp() {
               </label>
 
               <input
-                type="email"
                 id="email"
                 value={email}
                 placeholder="Input your email address"
@@ -259,7 +161,7 @@ export default function SignUp() {
                 value={password}
                 onFocus={showPassMeter}
                 onBlur={hidePassMeter}
-                placeholder="Input your password address"
+                placeholder="Input your password"
                 className="w-full h-10 mt-2 rounded-md indent-3 border-gray-400 focus:border-blue-500 border"
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -293,37 +195,36 @@ export default function SignUp() {
               <div className="block">{isPassMeterStrong()}</div>
             </div>
             <div className="text-xs ">
-              <p className={letterStartWithUppercase("style")}>
-                <FontAwesomeIcon icon={letterStartWithUppercase("icon")} /> Start with an uppercase
-                letter
+              <p className={letterStartWithUppercase("style", password)}>
+                <FontAwesomeIcon icon={letterStartWithUppercase("icon", password)} /> Start with an
+                uppercase letter
               </p>
               <p className={isMinPassLengthEight("style")}>
                 <FontAwesomeIcon icon={isMinPassLengthEight("icon")} /> Minimum password length is 8
                 characters
               </p>
-              <p className={passWithNumAndLetter("style")}>
-                <FontAwesomeIcon icon={passWithNumAndLetter("icon")} /> Combine password with
-                numbers and letters
+              <p className={passWithNumAndLetter("style", password)}>
+                <FontAwesomeIcon icon={passWithNumAndLetter("icon", password)} /> Combine password
+                with numbers and letters
               </p>
             </div>
             <button
-              type="button"
-              onClick={() => registUser()}
+              type="submit"
               className="bg-blue-500 text-white w-full h-10 rounded-md block font-medium"
             >
               Sign
             </button>
           </form>
+          <ToastContainer
+            position="top-right"
+            closeOnClick="true"
+            hideProgressBar="true"
+            transition={Flip}
+            pauseOnFocusLoss={true}
+            autoClose="1000"
+            className="mt-4"
+          />
         </div>
-        <ToastContainer
-          className=""
-          position="top-right"
-          closeOnClick="true"
-          hideProgressBar="true"
-          transition={Flip}
-          pauseOnFocusLoss="false"
-          autoClose="2000"
-        />
       </div>
     </div>
   );

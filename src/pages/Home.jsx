@@ -6,57 +6,20 @@ import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Bounce, Flip, ToastContainer, Zoom, toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { getTrivia } from "../redux/actions/foodActions";
+import { authMe } from "../redux/actions/authActions";
+import { checkLocationState } from "../utils/checkLocationState";
 
 export default function Home() {
-  const [dataTrivia, setDataTrivia] = useState("");
-  const [userData, setUserData] = useState("");
-  const BASE_URL_FOOD = "https://api.spoonacular.com/food/trivia/random";
-  const BASE_URL_AUTH_USER = "https://shy-cloud-3319.fly.dev/api/v1/auth/me";
-  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const location = useLocation();
-  const trivia = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL_FOOD}?apiKey=${import.meta.env.VITE_API_KEY}`, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      setDataTrivia(response?.data?.text);
-    } catch (err) {
-      console.log("error fetching data food", err);
-    }
-  };
-
-  const authMe = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL_AUTH_USER}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUserData(response?.data?.data);
-      console.log("data auth", response?.data);
-    } catch (err) {
-      console.log("error fetching auth", err);
-    }
-  };
+  const dispatch = useDispatch();
+  const trivia = useSelector((state) => state?.food?.trivia);
 
   useEffect(() => {
-    trivia();
-    if (location.state) {
-      if (location.state.info) {
-        toast.info(location.state.info);
-      } else if (location.state.success) {
-        toast.success(location.state.success);
-      }
-
-      navigate(".", { state: false });
-    }
-
-    if (localStorage.getItem("login") === "facebook") return;
-    authMe();
+    dispatch(getTrivia());
+    checkLocationState(location, navigate);
   }, []);
 
   return (
@@ -102,22 +65,21 @@ export default function Home() {
               <h2 className="font-medium">Food Trivia</h2>
             </div>
             <p className="p-5">
-              {dataTrivia
-                ? dataTrivia
+              {trivia
+                ? trivia
                 : "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil atque, tenetur temporibus incidunt consectetur commodi vel cum illum tempora impedit quo nesciunt quasi iusto pariatur aut, nemo voluptatibus maiores labore."}
             </p>
           </div>
         </div>
         <Footer />
         <ToastContainer
-          autoClose={3000}
           position="top-right"
+          closeOnClick="true"
+          hideProgressBar="true"
+          transition={Flip}
+          pauseOnFocusLoss={true}
+          autoClose="1000"
           className="mt-14"
-          hideProgressBar={true}
-          closeOnClick
-          pauseOnFocusLoss={false}
-          transition={Bounce}
-          pauseOnHover
         />
       </div>
     </>

@@ -3,41 +3,23 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { loginWithGoogle } from "../redux/actions/authActions";
 
 function LoginGoogle() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const login = useGoogleLogin({
     onSuccess: async (codeResponse) => {
-      toast.loading("wait");
-      console.log("Login success:", codeResponse);
-
-      try {
-        const response = await axios.post(
-          "https://shy-cloud-3319.fly.dev/api/v1/auth/google",
-
-          {
-            access_token: `${codeResponse?.access_token}`,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        localStorage.setItem("token", response.data.data.token);
-        console.log("data", response.data);
-        navigate("/", {
-          state: { success: "Login successfull" },
-        });
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error("error", error);
-      }
+      toast.loading("wait", {
+        toastId: "toastLoading",
+      });
+      dispatch(loginWithGoogle(codeResponse, navigate));
     },
     onError: (error) => {
+      toast.dismiss("toastLoading");
+      toast.error(error);
       console.error("Login error:", error);
-      // Tindakan penanganan error
     },
   });
 

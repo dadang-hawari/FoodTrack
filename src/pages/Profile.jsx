@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DefaultNav from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faEnvelope, faUser, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const userData = JSON.parse(localStorage.getItem("userData"));
-
+  const userData = useSelector((state) => state?.auth?.userData);
   useEffect(() => {
     console.log(userData);
     if (!userData) {
@@ -18,6 +17,8 @@ export default function Profile() {
     }
   }, []);
 
+  const { name, email, createdAt, picture, type } = userData?.data ?? {};
+
   return (
     <div>
       {userData ? (
@@ -26,24 +27,24 @@ export default function Profile() {
           <div className="flex flex-col-reverse md:flex-row w-fit md:w-full gap-4 items-center mt-20 max-w-3xl mx-auto justify-between shadow-md py-5 px-7">
             <div className="text-gray-800">
               <p className="font-bold text-3xl mb-3">
-                {userData?.data?.type?.toUpperCase() ? userData?.data?.type?.toUpperCase() : "USER"}
+                {type?.toUpperCase() ? type?.toUpperCase() : "USER"}
               </p>
               <div className="flex flex-col gap-y-2">
                 <div className="flex gap-x-5 items-center">
                   <FontAwesomeIcon icon={faUser} />
-                  <p>{userData?.data?.name}</p>
+                  <p>{name}</p>
                 </div>
                 <div className="flex gap-x-5 items-center">
                   <FontAwesomeIcon icon={faEnvelope} />
-                  <p>{userData?.data?.email}</p>
+                  <p>{email}</p>
                 </div>
                 <hr />
                 <div className="flex gap-x-5 items-center">
                   <FontAwesomeIcon icon={faCalendar} />
                   <p>
                     Joined on :{" "}
-                    {userData?.data?.createdAt
-                      ? new Date(userData?.data?.createdAt).toLocaleDateString("id-ID", {
+                    {createdAt
+                      ? new Date(createdAt).toLocaleDateString("id-ID", {
                           day: "2-digit",
                           month: "long",
                           year: "numeric",
@@ -53,13 +54,9 @@ export default function Profile() {
                 </div>
               </div>
             </div>
-            {userData?.data?.picture ? (
+            {picture ? (
               <div>
-                <img
-                  src={userData?.data?.picture?.data?.url}
-                  alt={userData?.data?.name}
-                  className="w-52 h-52 p-5"
-                />
+                <img src={picture?.data?.url} alt={name} className="w-52 h-52 p-5" />
               </div>
             ) : (
               <div className="bg-gray-100 p-5 rounded-md">

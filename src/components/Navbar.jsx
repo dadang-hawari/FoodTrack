@@ -12,55 +12,57 @@ import { IconButton, Collapse } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FacebookLoginClient } from "@greatsumini/react-facebook-login";
+import { useDispatch } from "react-redux";
+import { authMe } from "../redux/actions/authActions";
+import { useSelector } from "react-redux";
+import { setLoginWith, setToken, setUserData } from "../redux/reducers/authReducers";
+import { toast } from "react-toastify";
+
 export default function DefaultNav() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const path = window.location.pathname;
-  const BASE_URL_AUTH_USER = "https://shy-cloud-3319.fly.dev/api/v1/auth/me";
   const [openNav, setOpenNav] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const token = localStorage.getItem("token");
-  const dataUser = JSON.parse(localStorage.getItem("userData"));
+  const dataUser = useSelector((state) => state?.auth);
 
-  const authMe = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL_AUTH_USER}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      localStorage.setItem("userData", JSON.stringify(response?.data));
-      console.log("data auth", response);
-    } catch (err) {
-      if (err.response.status === 401) {
-        localStorage.removeItem("userData");
-        localStorage.removeItem("token");
-      } else {
+  const checkFacebookExpires = () => {
+    if (dataUser?.loginWith === "facebook") {
+      const userData = dataUser?.userData?.data;
+      const timeNow = Math.floor(Date.now() / 1000);
+      if (userData) {
+        console.log("time now", timeNow);
+        console.log("expire", userData?.facebookExpire);
+        if (timeNow > userData?.facebookExpire) {
+          dispatch(setUserData(null));
+          dispatch(setToken(null));
+          dispatch(setLoginWith(null));
+          toast.info("Token expired, please sign in");
+          navigate(path === "/profile" ? "/" : "");
+        }
       }
-
-      console.log("error fetching auth", err);
     }
   };
 
   useEffect(() => {
-    if (localStorage.getItem("login") === "facebook") {
-      const userData = localStorage.getItem("userData");
-      const timeNow = Math.floor(Date.now() / 1000);
-      if (userData) {
-        const userDataObj = JSON.parse(userData);
-        console.log("time now", timeNow);
-        console.log("user data", userDataObj.data.facebookExpires);
+    dispatch(authMe(navigate, path));
+    checkFacebookExpires();
+  }, []);
 
-        if (timeNow > userDataObj.data.facebookExpires) {
-          localStorage.removeItem("userData");
-          localStorage.removeItem("login");
-          navigate("/", { state: { info: "Token expired, please sign in" } });
-        }
-      }
-    } else if (localStorage.getItem("token")) {
-      authMe();
-    }
-  }, []); // Pastikan dependencies array kosong jika useEffect hanya perlu dijalankan sekali saat komponen dimount
+  const handleLogout = () => {
+    dispatch(setToken(null));
+    if (dataUser?.loginWith === "facebook")
+      FacebookLoginClient.logout(() => {
+        console.log("logout completed!");
+      });
+    dispatch(setLoginWith(null));
+    dispatch(setUserData(null));
+    navigate("/login", {
+      state: {
+        success: "Logout successfull",
+      },
+    });
+  };
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -83,6 +85,7 @@ export default function DefaultNav() {
           Home
         </Link>
       </li>
+
       <li>
         <Link
           className={`${path === "/food-list" ? "font-medium text-blue-500" : ""}`}
@@ -93,18 +96,18 @@ export default function DefaultNav() {
       </li>
 
       <li className="relative">
-        {dataUser ? (
+        {dataUser.userData ? (
           <div className="relative w-fit mx-auto">
             <div
               className="list-none relative p-2 rounded-md text-black cursor-pointer  bg-white bg-opacity-90"
               onClick={handleProfileDropdown}
             >
               <div className="flex items-center w-fit">
-                {dataUser?.data?.picture ? (
+                {dataUser?.userData?.data?.picture ? (
                   <div>
                     <img
-                      src={dataUser?.data?.picture?.data?.url}
-                      alt={dataUser?.data?.name}
+                      src={dataUser?.userData?.data?.picture?.data?.url}
+                      alt={dataUser?.userData?.data?.name}
                       className="w-[22px] h-[22px] rounded-full"
                     />
                   </div>
@@ -113,7 +116,7 @@ export default function DefaultNav() {
                     <FontAwesomeIcon icon={faUser} className="text-white" />
                   </span>
                 )}
-                <span className="mx-3">{dataUser?.data?.name}</span>
+                <span className="mx-3">{dataUser?.userData?.data?.name}</span>
                 <FontAwesomeIcon
                   icon={faChevronDown}
                   className={`transition-transform duration-200 ${
@@ -125,23 +128,7 @@ export default function DefaultNav() {
             {showProfileDropdown && (
               <div className="absolute bg-white bg-opacity-90 p-5 shadow-md rounded-md w-full top-10 left-0">
                 <Link to="/profile">Profile</Link>
-                <div
-                  className="text-red-400 my-1 cursor-pointer"
-                  onClick={() => {
-                    localStorage.getItem("token") ? localStorage.removeItem("token") : "";
-                    localStorage.removeItem("userData");
-                    localStorage.getItem("login") ? localStorage.removeItem("login") : "";
-                    localStorage.getItem("img") ? localStorage.removeItem("img") : "";
-                    localStorage.getItem("login") === "facebook"
-                      ? FacebookLoginClient.logout()
-                      : "";
-                    navigate("/login", {
-                      state: {
-                        info: "Logout successfull",
-                      },
-                    });
-                  }}
-                >
+                <div className="text-red-400 my-1 cursor-pointer" onClick={handleLogout}>
                   Logout
                 </div>
               </div>

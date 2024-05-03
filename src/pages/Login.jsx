@@ -5,96 +5,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from "react-toastify";
 import LoginGoogle from "../components/GoogleLogin";
-import LoginWithFacebook from "../components/LoginWithFacebook";
-import ValidateEmail from "../utils/validateEmail";
+import LoginWithFacebook from "../components/FacebookLogin";
 import breakfastImg from "/src/assets/breakfast.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../redux/actions/authActions";
+import { checkLocationState } from "../utils/checkLocationState";
+import { checkUserSignedIn } from "../utils/checkUserSignedIn";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordShowed, setIsPasswordShowed] = useState(false);
-  const navigate = useNavigate();
-  const userData = JSON.parse(localStorage.getItem("userData"));
-  const location = useLocation();
+  const data = useSelector((state) => state?.auth);
+  const userData = data?.userData;
+  const token = data?.token;
 
   useEffect(() => {
-    if (userData) {
-      navigate("/", {
-        state: { info: "You've signed in" },
-      });
-    }
-    if (location.state) {
-      if (location.state.info) {
-        toast.info(location.state.info);
-      } else if (location.state.success) {
-        toast.success(location.state.success);
-      }
-      navigate(".", { state: false });
-    }
+    checkUserSignedIn(token, userData, navigate);
+    checkLocationState(location, navigate);
   }, []);
-
-  async function loginUser() {
-    if (email.trim().length === 0 && password.trim().length === 0) {
-      toast.info("Please fill out all fields", {
-        toastId: "toastInfo",
-      });
-      return;
-    } else if (email.trim().length === 0) {
-      ValidateEmail(email);
-      return;
-    } else if (password.trim().length === 0) {
-      toast.info("Password is required", {
-        toastId: "toastInfo",
-      });
-      return;
-    }
-
-    try {
-      toast.loading("wait", {
-        toastId: "toastWait",
-      });
-
-      const response = await axios.post(
-        "https://shy-cloud-3319.fly.dev/api/v1/auth/login",
-        {
-          email: email,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("email", email);
-
-      const data = response.data.data;
-      if (response.status === 200) {
-        localStorage.setItem("token", data.token);
-        toast.dismiss("toastWait");
-        navigate("/", {
-          state: {
-            success: "Login successful",
-          },
-        });
-      }
-    } catch (error) {
-      toast.dismiss("toastWait");
-
-      toast.info(
-        <div className="" style={{ fontFamily: "Poppins" }}>
-          {error.response.data.message}
-        </div>,
-        {
-          toastId: "toast-1",
-        }
-      );
-
-      console.error("error", error);
-      //   console.log("Error:", error.response.data.message);
-    }
-  }
 
   return (
     <div className="max-w-[500px] md:max-w-[804px] lg:max-w-full h-screen mx-auto justify-center before:hidden xl:before:block before:content-[''] before:absolute before:w-1/2 before:h-screen before:-z-50 before:bg-login-side before:bg-cover before:bg-no-repeat before:blur-md">
@@ -121,9 +53,10 @@ export default function Login() {
             </h3>
           </div>
           <form
+            id="login"
             onSubmit={(e) => {
               e.preventDefault();
-              loginUser();
+              dispatch(loginUser({ email, password }, navigate));
             }}
             className="flex flex-col w-full gap-y-4"
           >
@@ -137,6 +70,7 @@ export default function Login() {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="true"
                 className="w-full h-10 mt-2 rounded-md indent-3 border-gray-400 focus:border-blue-500 border"
               />
             </div>
@@ -146,7 +80,8 @@ export default function Login() {
               </label>
               <input
                 type={isPasswordShowed ? "text" : "password"}
-                id="pasword"
+                id="password"
+                autoComplete="true"
                 value={password}
                 className="w-full h-10 mt-2 rounded-md indent-3 border-gray-400 focus:border-blue-500 border"
                 onChange={(e) => setPassword(e.target.value)}
@@ -170,15 +105,6 @@ export default function Login() {
             >
               Sign In
             </button>
-            <ToastContainer
-              position="top-right"
-              closeOnClick="true"
-              hideProgressBar="true"
-              transition={Flip}
-              pauseOnFocusLoss={true}
-              autoClose="1000"
-              className="text-black"
-            />
 
             <div className="relative text-center after:-z-10 after:content-[''] after:border-[1px] after:absolute after:w-full after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2">
               <p className="bg-white w-fit mx-auto p-2 text-sm">
@@ -192,6 +118,15 @@ export default function Login() {
             </div>
           </form>
         </div>
+        <ToastContainer
+          position="top-right"
+          closeOnClick="true"
+          hideProgressBar="true"
+          transition={Flip}
+          pauseOnFocusLoss={true}
+          autoClose="1000"
+          className="mt-4"
+        />
       </div>
     </div>
   );

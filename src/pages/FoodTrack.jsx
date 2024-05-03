@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -10,59 +9,22 @@ import {
   faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { searchFood } from "../redux/actions/foodActions";
 import DefaultNav from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Flip, ToastContainer } from "react-toastify";
 
 export default function FoodTrack() {
   const [query, setQuery] = useState("");
-  const [foods, setFoods] = useState([]);
-  const [result, setResult] = useState("");
-
-  const [number, setNumber] = useState(24);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
+  const [number, setNumber] = useState(24);
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state?.food);
   const navigate = useNavigate();
-  const BASE_URL = "https://api.spoonacular.com/recipes/";
-
-  const searchFood = async () => {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}complexSearch?query=${query}&number=${number}&offset=${currentPage}&addRecipeNutrition=true&apiKey=${
-          import.meta.env.VITE_API_KEY
-        }`,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setResult(response.data);
-      setFoods(response.data.results);
-      setTotalPages(
-        Math.ceil(parseInt(response.data.totalResults) / parseInt(number))
-      );
-      setIsLoading(false);
-    } catch (err) {
-      console.log("error fetching data: ", err);
-    }
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
 
   useEffect(() => {
-    searchFood();
+    dispatch(searchFood({ query, number, currentPage }));
   }, [number, currentPage]);
 
   const handleChange = (event) => {
@@ -71,24 +33,25 @@ export default function FoodTrack() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    searchFood();
+    dispatch(searchFood({ query, number, currentPage }));
+    if (data?.totalPages <= 1) setCurrentPage(1);
   };
 
-  useEffect(() => {
-    searchFood();
-  }, []);
+  const goToPreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < data?.totalPages) setCurrentPage(currentPage + 1);
+  };
 
   return (
     <>
       <DefaultNav />
-
       <div className="pt-24 flex flex-col justify-between h-screen">
         <div className="max-w-8xl w-full mx-auto flex flex-col justify-center items-center gap-8 pb-24 px-5">
           <h2 className="text-3xl">Find your food</h2>
-          <form
-            onSubmit={handleSubmit}
-            className="my-5 relative w-full max-w-[800px]"
-          >
+          <form onSubmit={handleSubmit} className="my-5 relative w-full max-w-[800px]">
             <input
               type="text"
               placeholder="Search food"
@@ -106,33 +69,26 @@ export default function FoodTrack() {
 
           <div className="w-full max-w-[800px]">
             <div className="flex w-full justify-between">
-              <div className=" w-40">
+              <div className="w-40">
                 <h2>Show</h2>
                 <select
+                  defaultValue="24"
                   onChange={(e) => setNumber(e.target.value)}
-                  className="border border-gray-300 focus:border-blue-400 outline-none p-2 mb-2 w-full rounded-md cursor-pointer  "
+                  className="border border-gray-300 focus:border-blue-400 outline-none p-2 mb-2 w-full rounded-md cursor-pointer"
                 >
-                  <option selected value="24">
-                    24
-                  </option>
+                  <option value="24">24</option>
                   <option value="48">48</option>
                   <option value="96">96</option>
                 </select>
               </div>
-              <div className="">
+              <div>
                 <h2>Page</h2>
-                <button
-                  className="-ml-3  p-2 active:text-blue-400"
-                  onClick={goToPreviousPage}
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} className="h-5 w-5 " />
+                <button className="-ml-3 p-2 active:text-blue-400" onClick={goToPreviousPage}>
+                  <FontAwesomeIcon icon={faChevronLeft} className="h-5 w-5" />
                 </button>
-                <span className="text-xl">{currentPage}</span> /{" "}
-                <span className="text-xl">{totalPages}</span>
-                <button
-                  className="p-2 active:text-blue-400"
-                  onClick={goToNextPage}
-                >
+                <span className="text-xl">{data?.totalPages <= 1 ? 1 : currentPage}</span> /{" "}
+                <span className="text-xl">{data?.totalPages <= 1 ? 1 : data?.totalPages}</span>
+                <button className="p-2 active:text-blue-400" onClick={goToNextPage}>
                   <FontAwesomeIcon icon={faChevronRight} className="h-5 w-5" />
                 </button>
               </div>
@@ -141,101 +97,89 @@ export default function FoodTrack() {
 
           <h2 className="text-xl">
             Showing{" "}
-            <span className="text-green-400">
-              {`${
-                result?.totalResults === undefined
-                  ? 0
-                  : number >= result?.totalResults
-                  ? result?.totalResults
-                  : number
-              }`}
-            </span>{" "}
+            <span className="text-green-400">{`${
+              data?.searchFoodResults?.totalResults === undefined
+                ? 0
+                : Math.min(number, data?.searchFoodResults?.results.length)
+            }`}</span>{" "}
             of{" "}
             <span className="text-red-500 ">
-              {result?.totalResults === undefined ? 0 : result?.totalResults}
+              {data?.searchFoodResults?.totalResults === undefined
+                ? 0
+                : data?.searchFoodResults?.totalResults}
             </span>{" "}
             Total Results
           </h2>
 
-          <div className=" xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 grid gap-8 pb-2">
-            {foods?.map((food) => (
-              <div
-                key={food?.id}
-                className="flex flex-col max-w-[400px] min-w-[280px] max-sm:min-w-[250px] shadow-[0_0_2px_1px_rgb(0,0,0,0.3)] rounded-lg items-center"
-              >
-                <img
-                  src={`${food?.image}`}
-                  alt={food?.title}
-                  className="rounded-t-md w-full h-auto max-h-[240px] object-cover "
-                />
-                <div className="p-4">
-                  <ul className="flex gap-x-4 justify-center">
-                    <li className="border-r border-gray-300 pe-4">
-                      <div className="flex gap-x-2 justify-center">
-                        <FontAwesomeIcon
-                          icon={faNotesMedical}
-                          className="h-5 text-red-400"
-                        />
-                        <span>{food?.healthScore}%</span>
-                      </div>
-                      <p className="text-center">Health Score</p>
-                    </li>
-                    <li className="border-r border-gray-300 pe-4">
-                      <div className="flex gap-x-2 justify-center">
-                        <FontAwesomeIcon
-                          icon={faFire}
-                          className="h-5 text-orange-400"
-                        />
-                        <span>
-                          {food?.nutrition?.nutrients
-                            ?.filter(
-                              (nutrient) => nutrient?.name === "Calories"
-                            )
-                            .map(
-                              (nutrient) => `
-                  ${parseInt(nutrient?.amount)}
-              `
-                            )}
-                        </span>
-                      </div>
-                      <p>Calories</p>
-                    </li>
-                    <li>
-                      <div className="flex gap-x-2 justify-center">
-                        <FontAwesomeIcon
-                          icon={faUtensils}
-                          className="h-5 text-yellow-icon"
-                        />
-                        <span>{food?.servings}</span>
-                      </div>
-                      <p>Servings</p>
-                    </li>
-                  </ul>
-                </div>
-                <h2
-                  className="font-medium px-5 text-2xl hover:text-blue-400 transition cursor-pointer"
-                  onClick={() => {
-                    navigate(`/food-detail/${food?.id}`, {
-                      state: {
-                        id: food?.id,
-                      },
-                    });
-                  }}
-                >
-                  {food?.title}
-                </h2>
-                <p
-                  className="p-4"
-                  dangerouslySetInnerHTML={{
-                    __html: `${food?.summary?.slice(0, 120)} ...`,
-                  }}
-                />
-              </div>
-            ))}
-          </div>
+          <FoodList data={data} navigate={navigate} />
         </div>
         <Footer />
       </div>
     </>
   );
 }
+
+const FoodList = ({ data, navigate }) => (
+  <div className="xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 grid gap-8 pb-2">
+    {data?.foodLists?.map((food) => (
+      <div
+        key={food?.id}
+        className="flex flex-col max-w-[400px] min-w-[280px] max-sm:min-w-[250px] shadow-[0_0_2px_1px_rgb(0,0,0,0.3)] rounded-lg items-center"
+      >
+        <img
+          src={`${food?.image}`}
+          alt={food?.title}
+          className="rounded-t-md w-full h-auto max-h-[240px] object-cover "
+        />
+        <div className="p-4">
+          <ul className="flex gap-x-4 justify-center">
+            <li className="border-r border-gray-300 pe-4">
+              <div className="flex gap-x-2 justify-center">
+                <FontAwesomeIcon icon={faNotesMedical} className="h-5 text-red-400" />
+                <span>{food?.healthScore}%</span>
+              </div>
+              <p className="text-center">Health Score</p>
+            </li>
+            <li className="border-r border-gray-300 pe-4">
+              <div className="flex gap-x-2 justify-center">
+                <FontAwesomeIcon icon={faFire} className="h-5 text-orange-400" />
+                <span>
+                  {food?.nutrition?.nutrients
+                    ?.filter((nutrient) => nutrient?.name === "Calories")
+                    .map((nutrient) => `${parseInt(nutrient?.amount)}`)}
+                </span>
+              </div>
+              <p>Calories</p>
+            </li>
+            <li>
+              <div className="flex gap-x-2 justify-center">
+                <FontAwesomeIcon icon={faUtensils} className="h-5 text-yellow-icon" />
+                <span>{food?.servings}</span>
+              </div>
+              <p>Servings</p>
+            </li>
+          </ul>
+        </div>
+        <h2
+          className="font-medium px-5 text-2xl hover:text-blue-400 transition cursor-pointer"
+          onClick={() => navigate(`/food-detail/${food?.id}`, { state: { id: food?.id } })}
+        >
+          {food?.title}
+        </h2>
+        <p
+          className="p-4"
+          dangerouslySetInnerHTML={{ __html: `${food?.summary?.slice(0, 120)} ...` }}
+        />
+      </div>
+    ))}
+    <ToastContainer
+      position="top-right"
+      closeOnClick="true"
+      hideProgressBar="true"
+      transition={Flip}
+      pauseOnFocusLoss={true}
+      autoClose="1000"
+      className="mt-14"
+    />
+  </div>
+);
