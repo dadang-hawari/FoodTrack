@@ -20,7 +20,6 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducers);
-console.log("import.meta.env.NODE_ENV :>> ", import.meta.env.VITE_NODE_ENV);
 export const store = configureStore({
   reducer: persistedReducer,
   devTools: import.meta.env.VITE_NODE_ENV === "development",

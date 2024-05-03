@@ -73,7 +73,6 @@ export const registUser =
         );
 
         const data = response.data;
-        console.log("data", data);
 
         if (response.status === 201) {
           navigate("/login", { state: { success: "Account created" } });
@@ -113,7 +112,6 @@ export const loginUser =
         email: email,
         password: password,
       });
-      console.log("response :>> ", response);
       const data = response.data.data;
       if (response.status === 200) {
         dispatch(setToken(data.token));
@@ -144,7 +142,6 @@ export const loginWithGoogle = (codeResponse, navigate) => async (dispatch) => {
     );
 
     dispatch(setToken(response.data.data.token));
-    console.log("data", response.data);
     toast.dismiss("toastLoading");
     navigate("/", {
       state: { success: "Login successfull" },
