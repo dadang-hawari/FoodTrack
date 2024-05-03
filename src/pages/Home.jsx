@@ -3,12 +3,10 @@ import Footer from "../components/Footer";
 import DefaultNav from "../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Bounce, Flip, ToastContainer, Zoom, toast } from "react-toastify";
+import { useEffect } from "react";
+import { Flip, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getTrivia } from "../redux/actions/foodActions";
-import { authMe } from "../redux/actions/authActions";
 import { checkLocationState } from "../utils/checkLocationState";
 
 export default function Home() {
@@ -65,9 +63,9 @@ export default function Home() {
               <h2 className="font-medium">Food Trivia</h2>
             </div>
             <p className="p-5">
-              {/* {trivia
+              {trivia
                 ? trivia
-                : "Recognizing that food is more than sustenance—it is an expression of culture, heritage, and creativity."} */}
+                : "Recognizing that food is more than sustenance—it is an expression of culture, heritage, and creativity."}
             </p>
           </div>
         </div>
