@@ -6,7 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from "react-toastify";
 import LoginGoogle from "../components/GoogleLogin";
 import LoginWithFacebook from "../components/FacebookLogin";
-import breakfastImg from "/src/assets/breakfast.svg";
+import breakfastImg from "../../public/assets/breakfast.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/actions/authActions";
 import { checkLocationState } from "../utils/checkLocationState";

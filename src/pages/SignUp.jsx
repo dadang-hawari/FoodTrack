@@ -9,7 +9,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from "react-toastify";
-import breakfastImg from "/src/assets/breakfast.svg";
+import breakfastImg from "../../public/assets/breakfast.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { registUser } from "../redux/actions/authActions";
 import { checkUserSignedIn } from "../utils/checkUserSignedIn";
