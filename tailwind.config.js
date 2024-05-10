@@ -10,7 +10,7 @@ export default WithMT({
         "orange-icon": "#ED8936",
       },
       backgroundImage: {
-        "login-side": "url('/src/assets/soft-bg.jpg')",
+        "login-side": "url('assets/soft-bg.jpg')",
       },
     },
   },
