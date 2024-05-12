@@ -53,10 +53,8 @@ export const detailFood = (id) => async (dispatch) => {
         import.meta.env.VITE_API_KEY
       }`
     );
-    if (response.status === 200) {
-      dispatch(setDetailFood(response.data));
-      return false;
-    }
+    dispatch(setDetailFood(response.data));
+    return false;
   } catch (error) {
     console.log("Error fetching data", error);
     console.log("message", error.response.data.message);

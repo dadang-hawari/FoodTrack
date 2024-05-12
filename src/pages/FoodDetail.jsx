@@ -22,7 +22,7 @@ export default function FoodDetail() {
 
   const getDetailFood = async () => {
     setIsLoading(true);
-    await setIsLoading(dispatch(detailFood(id)));
+    setIsLoading(await dispatch(detailFood(id)));
   };
 
   const {

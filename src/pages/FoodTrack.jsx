@@ -25,15 +25,13 @@ export default function FoodTrack() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const dispatchSearchFood = async () => {
+  const searchFood = async () => {
     setIsLoading(true);
     setIsLoading(await dispatch(searchFood({ query, number, currentPage })));
   };
 
   useEffect(() => {
-    setIsLoading(true);
-
-    dispatchSearchFood();
+    searchFood();
   }, [number, currentPage]);
 
   const handleChange = (event) => {
@@ -42,7 +40,7 @@ export default function FoodTrack() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatchSearchFood();
+    searchFood();
     if (data?.totalPages <= 1) setCurrentPage(1);
   };
 
