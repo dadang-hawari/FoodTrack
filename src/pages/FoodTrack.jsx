@@ -14,6 +14,8 @@ import { searchFood } from "../redux/actions/foodActions";
 import DefaultNav from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 import SkeletonFoodList from "../components/common/SkeletonFoodList";
+import { Flip, ToastContainer, toast } from "react-toastify";
+import { Typography } from "@material-tailwind/react";
 import Toast from "../components/common/Toast";
 
 export default function FoodTrack() {
@@ -25,13 +27,20 @@ export default function FoodTrack() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const searchFood = async () => {
+  const dispatchSearchFood = () => {
     setIsLoading(true);
-    setIsLoading(await dispatch(searchFood({ query, number, currentPage })));
+    dispatch(searchFood({ query, number, currentPage }))
+      .then(() => setIsLoading(false))
+      .catch((error) => {
+        setIsLoading(true);
+        console.error("Error fetching food data:", error);
+      });
   };
 
   useEffect(() => {
-    searchFood();
+    setIsLoading(true);
+
+    dispatchSearchFood();
   }, [number, currentPage]);
 
   const handleChange = (event) => {
@@ -40,7 +49,7 @@ export default function FoodTrack() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    searchFood();
+    dispatchSearchFood();
     if (data?.totalPages <= 1) setCurrentPage(1);
   };
 
@@ -184,6 +193,6 @@ const FoodList = ({ data, navigate }) => (
         />
       </div>
     ))}
-    <Toast />
+    <Toast autoClose={3000} />
   </div>
 );

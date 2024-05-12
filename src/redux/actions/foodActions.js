@@ -22,7 +22,6 @@ export const getTrivia = () => async (dispatch) => {
     alert(err.message);
   }
 };
-
 export const searchFood =
   ({ query, number, currentPage }) =>
   async (dispatch) => {
@@ -32,17 +31,11 @@ export const searchFood =
           import.meta.env.VITE_API_KEY
         }`
       );
-      if (response.status === 200) {
-        dispatch(setSearchFoodResults(response.data));
-        dispatch(setFoodLists(response.data.results));
-        dispatch(
-          setTotalPages(Math.ceil(parseInt(response?.data?.totalResults) / parseInt(number)))
-        );
-        return false;
-      }
+      dispatch(setSearchFoodResults(response.data));
+      dispatch(setFoodLists(response.data.results));
+      dispatch(setTotalPages(Math.ceil(parseInt(response?.data?.totalResults) / parseInt(number))));
     } catch (err) {
-      console.log("error fetching data: ", err);
-      return true;
+      toast.info(err.response.data.message);
     }
   };
 
@@ -54,11 +47,7 @@ export const detailFood = (id) => async (dispatch) => {
       }`
     );
     dispatch(setDetailFood(response.data));
-    return false;
   } catch (error) {
-    console.log("Error fetching data", error);
-    console.log("message", error.response.data.message);
     toast.info(error.response.data.message);
-    return true;
   }
 };

@@ -20,9 +20,9 @@ export default function FoodDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
 
-  const getDetailFood = async () => {
+  const getDetailFood = () => {
     setIsLoading(true);
-    setIsLoading(await dispatch(detailFood(id)));
+    dispatch(detailFood(id)).then(() => setIsLoading(false));
   };
 
   const {
