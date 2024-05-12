@@ -4,7 +4,7 @@ import FoodDetail from "./pages/FoodDetail";
 import FoodTrack from "./pages/FoodTrack";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import LoginGoogle from "./components/GoogleLogin";
+import LoginGoogle from "./components/login/GoogleLogin";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

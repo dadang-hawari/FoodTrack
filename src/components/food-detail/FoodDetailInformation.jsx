@@ -12,30 +12,18 @@ export default function FoodDetailInformation({
     <div>
       <div className="grid sm:grid-cols-2 mt-5 gap-x-4 grid-cols-1 ">
         <div>
-          <h2 className="text-2xl mb-4 pb-2 border-b border-b-orange-100">
-            Ingredients
-          </h2>
+          <h2 className="text-2xl mb-4 pb-2 border-b border-b-orange-100">Ingredients</h2>
           <span className="flex flex-col gap-2">
             {extendedIngredients?.map((ingredient, i) => (
               <div key={i}>{ingredient?.original}</div>
             ))}
           </span>
-          <img
-            src={imgIngredient}
-            alt="ingredients"
-            className="w-full h-auto mt-2"
-          />
-          <h2 className="text-2xl my-3 pb-2 border-b border-b-orange-100">
-            Equipments
-          </h2>
-          <img
-            src={imgEquipment}
-            alt="equipments"
-            className="w-full h-auto mt-2"
-          />
+          <img src={imgIngredient} alt="ingredients" className="w-full h-auto mt-2" />
+          <h2 className="text-2xl my-3 pb-2 border-b border-b-orange-100">Equipments</h2>
+          <img src={imgEquipment} alt="equipments" className="w-full h-auto mt-2" />
         </div>
         <div>
-          <h2 className="text-2xl mb-4 pb-2 border-b border-b-orange-100">
+          <h2 className="text-2xl mb-4 mt-4 md:mt-0 pb-2 border-b border-b-orange-100">
             Nutrients
           </h2>
           <div>
@@ -99,22 +87,18 @@ export default function FoodDetailInformation({
             <div></div>
           </div>
           <span className="flex flex-col text-base">
-            {nutrients?.map(
-              ({ name, amount, unit, percentOfDailyNeeds }, i) => (
-                <div key={i} className="flex justify-between border-b py-2">
-                  {name}
-                  <div>
-                    {parseInt(amount)} {unit} {parseInt(percentOfDailyNeeds)}%
-                  </div>
+            {nutrients?.map(({ name, amount, unit, percentOfDailyNeeds }, i) => (
+              <div key={i} className="flex justify-between border-b py-2">
+                {name}
+                <div>
+                  {parseInt(amount)} {unit} {parseInt(percentOfDailyNeeds)}%
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </span>
         </div>
       </div>
-      <h2 className="text-2xl border-b mb-2 pb-2 border-b-orange-100">
-        Instructions
-      </h2>
+      <h2 className="text-2xl border-b mb-2 mt-4 pb-2 border-b-orange-100">Instructions</h2>
       <div
         dangerouslySetInnerHTML={{
           __html: `${instructions}`,

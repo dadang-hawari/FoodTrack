@@ -10,12 +10,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { IconButton, Collapse } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FacebookLoginClient } from "@greatsumini/react-facebook-login";
 import { useDispatch } from "react-redux";
-import { authMe } from "../redux/actions/authActions";
+import { authMe } from "../../redux/actions/authActions";
 import { useSelector } from "react-redux";
-import { setLoginWith, setToken, setUserData } from "../redux/reducers/authReducers";
+import { setLoginWith, setToken, setUserData } from "../../redux/reducers/authReducers";
 import { toast } from "react-toastify";
 
 export default function DefaultNav() {

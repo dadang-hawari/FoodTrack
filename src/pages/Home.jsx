@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
-import DefaultNav from "../components/Navbar";
+import Footer from "../components/common/Footer";
+import DefaultNav from "../components/common/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
@@ -54,6 +54,7 @@ export default function Home() {
                 height="428"
                 className="mx-auto max-md:mb-2 rounded-lg"
                 alt="Food"
+                loading="lazy"
               />
             </div>
           </div>

@@ -10,7 +10,7 @@ export default function FoodFacts({ healthScore, nutrition, readyInMinutes, serv
         <div>
           <ul className="flex items-center gap-3 justify-around mt-3 flex-wrap sm:flex-nowrap ">
             <li className="flex items-center flex-col">
-              <span className="text-xl text-orange-400">{healthScore}</span>
+              <span className="text-xl text-orange-400">{healthScore}%</span>
               <div>
                 <FontAwesomeIcon icon={faNotesMedical} className="h-4 me-2 text-red-400" />
                 Health score
@@ -21,7 +21,7 @@ export default function FoodFacts({ healthScore, nutrition, readyInMinutes, serv
                 {nutrition
                   ?.filter((nutrient) => nutrient.name === "Calories")
                   .map((nutrient) => `${parseInt(nutrient.amount)}`)}
-              </span>
+              </span>{" "}
               <div>
                 <FontAwesomeIcon icon={faFire} className="h-4 me-2 text-orange-400" />
                 Callories

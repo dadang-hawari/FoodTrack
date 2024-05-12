@@ -11,20 +11,29 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { searchFood } from "../redux/actions/foodActions";
-import DefaultNav from "../components/Navbar";
-import Footer from "../components/Footer";
-import { Flip, ToastContainer } from "react-toastify";
+import DefaultNav from "../components/common/Navbar";
+import Footer from "../components/common/Footer";
+import SkeletonFoodList from "../components/common/SkeletonFoodList";
+import Toast from "../components/common/Toast";
 
 export default function FoodTrack() {
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [number, setNumber] = useState(24);
-  const dispatch = useDispatch();
   const data = useSelector((state) => state?.food);
+  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const dispatchSearchFood = async () => {
+    setIsLoading(true);
+    setIsLoading(await dispatch(searchFood({ query, number, currentPage })));
+  };
+
   useEffect(() => {
-    dispatch(searchFood({ query, number, currentPage }));
+    setIsLoading(true);
+
+    dispatchSearchFood();
   }, [number, currentPage]);
 
   const handleChange = (event) => {
@@ -33,7 +42,7 @@ export default function FoodTrack() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(searchFood({ query, number, currentPage }));
+    dispatchSearchFood();
     if (data?.totalPages <= 1) setCurrentPage(1);
   };
 
@@ -111,7 +120,11 @@ export default function FoodTrack() {
             Total Results
           </h2>
 
-          <FoodList data={data} navigate={navigate} />
+          {isLoading ? (
+            <SkeletonFoodList length={number} />
+          ) : (
+            <FoodList data={data} navigate={navigate} />
+          )}
         </div>
         <Footer />
       </div>
@@ -129,6 +142,7 @@ const FoodList = ({ data, navigate }) => (
         <img
           src={`${food?.image}`}
           alt={food?.title}
+          loading="lazy"
           className="rounded-t-md w-full h-auto max-h-[240px] object-cover "
         />
         <div className="p-4">
@@ -172,14 +186,6 @@ const FoodList = ({ data, navigate }) => (
         />
       </div>
     ))}
-    <ToastContainer
-      position="top-right"
-      closeOnClick="true"
-      hideProgressBar="true"
-      transition={Flip}
-      pauseOnFocusLoss={true}
-      autoClose="1000"
-      className="mt-14"
-    />
+    <Toast />
   </div>
 );

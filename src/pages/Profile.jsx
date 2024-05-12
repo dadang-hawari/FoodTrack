@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import DefaultNav from "../components/Navbar";
+import DefaultNav from "../components/common/Navbar";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faEnvelope, faUser, faUserAlt } from "@fortawesome/free-solid-svg-icons";

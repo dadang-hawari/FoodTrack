@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookF } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoginWith, setToken, setUserData } from "../redux/reducers/authReducers";
+import { setLoginWith, setToken, setUserData } from "../../redux/reducers/authReducers";
 import { toast } from "react-toastify";
 export default function LoginWithFacebook() {
   const navigate = useNavigate();

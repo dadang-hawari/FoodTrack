@@ -4,8 +4,8 @@ import { faChevronLeft, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-ic
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from "react-toastify";
-import LoginGoogle from "../components/GoogleLogin";
-import LoginWithFacebook from "../components/FacebookLogin";
+import LoginGoogle from "../components/login/GoogleLogin";
+import LoginWithFacebook from "../components/login/FacebookLogin";
 import breakfastImg from "../../public/assets/breakfast.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/actions/authActions";

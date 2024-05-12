@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { loginWithGoogle } from "../redux/actions/authActions";
+import { loginWithGoogle } from "../../redux/actions/authActions";
 
 function LoginGoogle() {
   const navigate = useNavigate();
