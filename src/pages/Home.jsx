@@ -50,7 +50,7 @@ export default function Home() {
             </div>
             <div>
               <img
-                src="./img/food-hero.jpg"
+                src="./img/food-hero.webp"
                 width="459"
                 height="428"
                 className="mx-auto max-md:mb-2 rounded-lg"

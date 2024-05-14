@@ -6,7 +6,7 @@ function Resizable() {
   const [width, setWidth] = useState(600);
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 3,
@@ -35,15 +35,15 @@ function Resizable() {
       >
         <Slider {...settings}>
           <div>
-            <img src="http://localhost:5173/img/food-hero.jpg" alt="" />
+            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" />
             <h3>1</h3>
           </div>
           <div>
-            <img src="http://localhost:5173/img/food-hero.jpg" alt="" />
+            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" />
             <h3>2</h3>
           </div>
           <div>
-            <img src="http://localhost:5173/img/food-hero.jpg" alt="" />
+            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" />
             <h3>3</h3>
           </div>
         </Slider>
