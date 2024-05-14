@@ -17,7 +17,7 @@ export default function Home() {
   const trivia = useSelector((state) => state?.food?.trivia);
 
   useEffect(() => {
-    // dispatch(getTrivia());
+    dispatch(getTrivia());
     checkLocationState(location, navigate);
   }, []);
 
