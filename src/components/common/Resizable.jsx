@@ -35,15 +35,15 @@ function Resizable() {
       >
         <Slider {...settings}>
           <div>
-            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" loading="lazy" />
+            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" />
             <h3>1</h3>
           </div>
           <div>
-            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" loading="lazy" />
+            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" />
             <h3>2</h3>
           </div>
           <div>
-            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" loading="lazy" />
+            <img src="./img/food-hero.webp" className="h-24 w-auto" alt="food" />
             <h3>3</h3>
           </div>
         </Slider>
