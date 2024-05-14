@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 body {
+  @apply overflow-x-hidden;
   font-family: "Poppins", sans-serif;
 }
 
@@ -63,7 +64,7 @@ hr {
 }
 
 .ReactModal__Overlay {
-  @apply opacity-0 transition-opacity ease-in-out duration-200;
+  @apply opacity-0 transition-opacity ease-in-out duration-200 z-20;
 }
 
 .ReactModal__Overlay--after-open {
@@ -71,14 +72,33 @@ hr {
 }
 
 .ReactModal__Overlay--before-close {
-  @apply opacity-0;
+  @apply opacity-100;
 }
 
 .ReactModal__Content {
-  @apply max-w-[800px] w-[90%];
+  @apply max-w-[400px] w-[90%] h-fit;
 }
-
 .Toastify__toast.Toastify__toast-theme--light {
   font-family: "Poppins", sans-serif;
   @apply text-gray-700;
+}
+
+.image-slider-container {
+  margin: 0 auto;
+  width: 600px;
+}
+
+.image-slider-container .slick-prev:before,
+.image-slider-container .slick-next:before {
+  color: black;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: blue;
+  margin: 0 auto;
+  max-width: 800px;
+  width: 100%;
 }

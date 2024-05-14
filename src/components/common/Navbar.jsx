@@ -1,6 +1,7 @@
 import {
   faBarsProgress,
   faChevronDown,
+  faQuestionCircle,
   faSpoon,
   faUser,
   faXmarkSquare,
@@ -16,6 +17,9 @@ import { authMe } from "../../redux/actions/authActions";
 import { useSelector } from "react-redux";
 import { setLoginWith, setToken, setUserData } from "../../redux/reducers/authReducers";
 import { toast } from "react-toastify";
+import ReactModal from "react-modal";
+import { customStyles } from "../../styles/customStyles";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons/faQuestion";
 
 export default function DefaultNav() {
   const navigate = useNavigate();
@@ -24,6 +28,14 @@ export default function DefaultNav() {
   const [openNav, setOpenNav] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const dataUser = useSelector((state) => state?.auth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const checkFacebookExpires = () => {
     if (dataUser?.loginWith === "facebook") {
@@ -45,6 +57,10 @@ export default function DefaultNav() {
     dispatch(authMe(navigate, path));
     checkFacebookExpires();
   }, []);
+
+  const confirmLogout = () => {
+    openModal();
+  };
 
   const handleLogout = () => {
     dispatch(setToken(null));
@@ -109,7 +125,7 @@ export default function DefaultNav() {
                   <span className="bg-gray-300 block w-[22px] h-[22px] rounded-full">
                     <FontAwesomeIcon icon={faUser} className="text-white" />
                   </span>
-                )}
+                )}{" "}
                 <span className="mx-3">{dataUser?.userData?.data?.name}</span>
                 <FontAwesomeIcon
                   icon={faChevronDown}
@@ -122,7 +138,7 @@ export default function DefaultNav() {
             {showProfileDropdown && (
               <div className="absolute bg-white bg-opacity-90 p-5 shadow-md rounded-md w-full top-10 left-0">
                 <Link to="/profile">Profile</Link>
-                <div className="text-red-400 my-1 cursor-pointer" onClick={handleLogout}>
+                <div className="text-red-400 my-1 cursor-pointer" onClick={confirmLogout}>
                   Logout
                 </div>
               </div>
@@ -144,6 +160,23 @@ export default function DefaultNav() {
 
   return (
     <div className="w-full">
+      <ReactModal isOpen={isModalOpen} onRequestClose={closeModal} style={customStyles}>
+        <div className="text-center">
+          <FontAwesomeIcon icon={faQuestion} className="h-12 text-red-400" />
+          <div>Are you sure you want to logout?</div>
+          <div className="flex flex-wrap gap-6 mt-5 justify-center">
+            <button
+              className="border-gray-500 border text-black p-2 rounded-md"
+              onClick={closeModal}
+            >
+              Cancel
+            </button>
+            <button className="bg-red-400 text-white p-2 rounded-md" onClick={handleLogout}>
+              Confirm
+            </button>
+          </div>
+        </div>
+      </ReactModal>
       <nav className="block shadow-md backdrop-saturate-200 backdrop-blur-2xl bg-opacity-80 bg-white text-white fixed top-0 z-10 h-max w-full rounded-none py-3 sm:px-6 px-5">
         <div className="flex items-center justify-between text-blue-gray-900">
           <Link to="/" className="no-underline">

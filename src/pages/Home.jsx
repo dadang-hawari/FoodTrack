@@ -8,6 +8,7 @@ import { Flip, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getTrivia } from "../redux/actions/foodActions";
 import { checkLocationState } from "../utils/checkLocationState";
+import Resizable from "../components/common/Resizable";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function Home() {
   const trivia = useSelector((state) => state?.food?.trivia);
 
   useEffect(() => {
-    dispatch(getTrivia());
+    // dispatch(getTrivia());
     checkLocationState(location, navigate);
   }, []);
 
@@ -70,6 +71,7 @@ export default function Home() {
             </p>
           </div>
         </div>
+        <Resizable />
         <Footer />
         <ToastContainer
           position="top-right"
