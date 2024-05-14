@@ -54,7 +54,6 @@ export default function Home() {
                 height="428"
                 className="mx-auto max-md:mb-2 rounded-lg"
                 alt="Food"
-                loading="lazy"
               />
             </div>
           </div>
