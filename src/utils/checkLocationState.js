@@ -8,6 +8,7 @@ export const checkLocationState = (location, navigate) => {
       });
     } else if (location.state.success) {
       toast.success(location.state.success);
+      console.log("location.state :>> ", location.state);
     }
     navigate(".", { state: false });
   }

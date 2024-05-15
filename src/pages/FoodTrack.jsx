@@ -27,20 +27,15 @@ export default function FoodTrack() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const dispatchSearchFood = () => {
+  const getSearchFood = () => {
     setIsLoading(true);
-    dispatch(searchFood({ query, number, currentPage }))
-      .then(() => setIsLoading(false))
-      .catch((error) => {
-        setIsLoading(true);
-        console.error("Error fetching food data:", error);
-      });
+    dispatch(searchFood({ query, number, currentPage })).then((result) => {
+      result.success ? setIsLoading(true) : setIsLoading(false);
+    });
   };
 
   useEffect(() => {
-    setIsLoading(true);
-
-    dispatchSearchFood();
+    getSearchFood();
   }, [number, currentPage]);
 
   const handleChange = (event) => {
@@ -49,7 +44,7 @@ export default function FoodTrack() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatchSearchFood();
+    getSearchFood();
     if (data?.totalPages <= 1) setCurrentPage(1);
   };
 

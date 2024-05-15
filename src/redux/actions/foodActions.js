@@ -15,7 +15,7 @@ export const getTrivia = () => async (dispatch) => {
     const response = await axios.get(`${BASE_URL_TRIVIA}?apiKey=${import.meta.env.VITE_API_KEY}`);
     dispatch(setTrivia(response?.data?.text));
   } catch (err) {
-    toast.info(err.response.data.message);
+    console.error(err.response.data.message);
   }
 };
 export const searchFood =
@@ -30,8 +30,10 @@ export const searchFood =
       dispatch(setSearchFoodResults(response.data));
       dispatch(setFoodLists(response.data.results));
       dispatch(setTotalPages(Math.ceil(parseInt(response?.data?.totalResults) / parseInt(number))));
+      return { success: false };
     } catch (err) {
-      toast.info(err.response.data.message);
+      console.error(err.response.data.message);
+      return { success: true };
     }
   };
 
@@ -43,7 +45,9 @@ export const detailFood = (id) => async (dispatch) => {
       }`
     );
     dispatch(setDetailFood(response.data));
+    return { success: false };
   } catch (error) {
-    toast.info(error.response.data.message);
+    console.error(err.response.data.message);
+    return { success: true };
   }
 };

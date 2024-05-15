@@ -22,7 +22,9 @@ export default function FoodDetail() {
 
   const getDetailFood = () => {
     setIsLoading(true);
-    dispatch(detailFood(id)).then(() => setIsLoading(false));
+    dispatch(detailFood(id)).then((result) =>
+      result.success ? setIsLoading(true) : setIsLoading(false)
+    );
   };
 
   const {
