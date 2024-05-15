@@ -143,7 +143,6 @@ const FoodList = ({ data, navigate }) => (
         <img
           src={`${food?.image}`}
           alt={food?.title}
-          loading="lazy"
           className="rounded-t-md w-full h-auto max-h-[240px] object-cover "
         />
         <div className="p-4">
