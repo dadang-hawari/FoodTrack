@@ -20,7 +20,7 @@ export const getTrivia = () => async (dispatch) => {
     });
     dispatch(setTrivia(response?.data?.text));
   } catch (err) {
-    console.err(err?.response?.data?.message);
+    console.error(err?.response?.data?.message);
   }
 };
 export const searchFood =
