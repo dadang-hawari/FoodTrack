@@ -14,8 +14,6 @@ import { searchFood } from "../redux/actions/foodActions";
 import DefaultNav from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 import SkeletonFoodList from "../components/common/SkeletonFoodList";
-import { Flip, ToastContainer, toast } from "react-toastify";
-import { Typography } from "@material-tailwind/react";
 import Toast from "../components/common/Toast";
 
 export default function FoodTrack() {
@@ -23,7 +21,7 @@ export default function FoodTrack() {
   const [currentPage, setCurrentPage] = useState(1);
   const [number, setNumber] = useState(24);
   const data = useSelector((state) => state?.food);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
