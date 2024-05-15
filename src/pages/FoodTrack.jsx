@@ -128,6 +128,7 @@ export default function FoodTrack() {
             <FoodList data={data} navigate={navigate} />
           )}
         </div>
+        <Toast autoClose={3000} />
         <Footer />
       </div>
     </>
@@ -188,6 +189,5 @@ const FoodList = ({ data, navigate }) => (
         />
       </div>
     ))}
-    <Toast autoClose={3000} />
   </div>
 );

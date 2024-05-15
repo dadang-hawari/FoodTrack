@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <div className="bg-white text-gray-900">
       <hr />
-      <div className="max-w-[1200px] mx-auto flex justify-between py-8  px-5 flex-wrap gap-3 footer">
+      <div className="max-w-[1200px] mx-auto flex flex-col justify-between py-8  px-5 flex-wrap gap-8 sm:flex-row footer">
         <div>
           <h2>FoodTrack</h2>
           <p>Know Your Food</p>

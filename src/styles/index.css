@@ -3,10 +3,8 @@
 @tailwind utilities;
 
 body {
-  @apply overflow-x-hidden;
   font-family: "Poppins", sans-serif;
 }
-
 b {
   @apply font-medium;
 }
@@ -81,23 +79,4 @@ hr {
 .Toastify__toast.Toastify__toast-theme--light {
   font-family: "Poppins", sans-serif;
   @apply text-gray-700;
-}
-
-.image-slider-container {
-  margin: 0 auto;
-  width: 600px;
-}
-
-.image-slider-container .slick-prev:before,
-.image-slider-container .slick-next:before {
-  color: black;
-}
-
-.slider-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  max-width: 800px;
-  width: 100%;
 }
