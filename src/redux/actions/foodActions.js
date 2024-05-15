@@ -15,11 +15,7 @@ export const getTrivia = () => async (dispatch) => {
     const response = await axios.get(`${BASE_URL_TRIVIA}?apiKey=${import.meta.env.VITE_API_KEY}`);
     dispatch(setTrivia(response?.data?.text));
   } catch (err) {
-    if (axios.isAxiosError(err)) {
-      alert(err.message);
-      return;
-    }
-    alert(err.message);
+    toast.info(err.response.data.message);
   }
 };
 export const searchFood =
