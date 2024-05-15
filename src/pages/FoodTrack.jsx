@@ -21,16 +21,19 @@ export default function FoodTrack() {
   const [currentPage, setCurrentPage] = useState(1);
   const [number, setNumber] = useState(24);
   const data = useSelector((state) => state?.food);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const getSearchFood = () => {
     setIsLoading(true);
-    dispatch(searchFood({ query, number, currentPage })).then(setIsLoading(false));
+    dispatch(searchFood({ query, number, currentPage })).then((result) => {
+      result.success ? setIsLoading(true) : setIsLoading(false);
+    });
   };
 
   useEffect(() => {
+    setIsLoading(true);
     getSearchFood();
   }, [number, currentPage]);
 
@@ -141,6 +144,7 @@ const FoodList = ({ data, navigate }) => (
         <img
           src={`${food?.image}`}
           alt={food?.title}
+          loading="lazy"
           className="rounded-t-md w-full h-auto max-h-[240px] object-cover "
         />
         <div className="p-4">
