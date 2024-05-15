@@ -27,9 +27,7 @@ export default function FoodTrack() {
 
   const getSearchFood = () => {
     setIsLoading(true);
-    dispatch(searchFood({ query, number, currentPage })).then((result) => {
-      result.success ? setIsLoading(true) : setIsLoading(false);
-    });
+    dispatch(searchFood({ query, number, currentPage })).then(setIsLoading(false));
   };
 
   useEffect(() => {
