@@ -3,9 +3,9 @@ import { combineReducers } from "redux";
 import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
-import { thunk } from "redux-thunk";
-import foodReducers from "./reducers/foodReducers";
+// thunk is included by default in Redux Toolkit's getDefaultMiddleware
 import authReducers from "./reducers/authReducers";
+import foodReducers from "./reducers/foodReducers";
 
 const rootReducers = combineReducers({
   food: foodReducers,
@@ -25,7 +25,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(thunk),
+    }),
 });
 
 export const persistor = persistStore(store);
