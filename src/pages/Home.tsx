@@ -138,7 +138,7 @@ const Home: FC = () => {
                     <div className="text-sm text-gray-600">Recipes</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold text-orange-icon">100%</div>
+                    <div className="text-3xl font-bold text-orange-icon">"± 70%"%</div>
                     <div className="text-sm text-gray-600">Accurate Data</div>
                   </div>
                 </div>
